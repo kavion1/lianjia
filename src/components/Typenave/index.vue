@@ -1,0 +1,204 @@
+<template>
+  <div class="banner">
+    <div class="container">
+      <ul class="channelList">
+        <router-link to="/home"> <li>首页</li></router-link>
+
+        <router-link to=""
+          ><li><a>商业租赁</a></li></router-link
+        >
+        <router-link to="/homedisplay">
+          <li>
+            <a :class="$route.name == 'homedisplay' ? 'selected' : ''">租房</a>
+          </li></router-link
+        >
+        <li><a>旅居</a></li>
+        <li><a>房价</a></li>
+        <li><a>小区</a></li>
+        <li><a>经纪人</a></li>
+        <li><a>指南</a></li>
+        <router-link to="/pubhome">
+          <li>
+            <a :class="$route.name == 'pubhome' ? 'selected' : ''">发布房源</a>
+          </li></router-link
+        >
+
+        <router-link to="/userhome"
+          ><li>
+            <a :class="$route.path.search('userhome') != -1 ? 'selected' : ''"
+              >业主</a
+            >
+          </li></router-link
+        >
+      </ul>
+      <div class="banner_right">
+        <div v-show="!user_list.flag">
+          <span class="logon_icon"></span>
+          <span>
+            <a class="login" @click="login">登录/</a>
+            <a class="register" @click="register">注册</a></span
+          >
+        </div>
+
+        <div v-show="user_list.flag" class="login_check">
+          <span>欢迎</span>
+          <span>
+            <img
+              :src="avatar"
+              width="20px"
+              height="20px"
+              style="border-radius:50%;vertical-align: middle;"
+            />
+            <a class="login">{{ user_name }}</a>
+            <a class="register" @click="logo_out">退出登录</a></span
+          >
+        </div>
+      </div>
+    </div>
+    <loginDialog ref="login" @updata="updata"></loginDialog>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      user_list: {},
+      user_name: "",
+      avatar: ""
+    };
+  },
+
+  methods: {
+    login() {
+      this.$refs.login.changelogin();
+    },
+    register() {
+      this.$refs.login.changeregister();
+    },
+    logo_out() {
+      this.user_list.flag = false;
+      this.$cookie.remove("token");
+      this.$cookie.remove("checked");
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("checked");
+
+      if (
+        this.$route.name == "pubhome" ||
+        this.$route.path.indexOf("userhome") != -1
+      ) {
+        this.$router.replace("/home");
+      }
+    },
+    login_token() {
+      this.$API.user
+        .login_token()
+        .then(result => {
+          this.user_name = result.data.userInfo.name;
+          this.$set(this.user_list, "flag", result.data.flag);
+          this.avatar = result.data.userInfo.avatar;
+        })
+        .catch(err => {
+          throw err;
+        });
+    },
+    updata(res) {
+      this.$set(this.user_list, "flag", res.flag);
+      this.user_name = res.userInfo.name;
+      this.avatar = res.userInfo.avatar;
+      console.log("uodata");
+    }
+  },
+  watch: {
+    $route: {
+      handler() {
+        deep: true;
+        if (this.$route.name != "home") {
+          this.$bus.$on("user_list", res => {
+            this.$set(this.user_list, "flag", res.flag);
+            this.user_name = res.userInfo.name;
+            this.avatar = res.userInfo.avatar;
+          });
+        }
+      }
+    },
+    user_list() {
+      console.log("username");
+    }
+  },
+  created() {
+    if (this.$cookie.get("checked") || sessionStorage.checked == "false") {
+      this.login_token();
+    }
+    this.$bus.$on("logo_out", res =>
+      this.$set(this.user_list, "flag", res.flag)
+    );
+  },
+  beforeUpdate() {
+    this.$bus.$on("user_list", res => {
+      this.$set(this.user_list, "flag", res.flag);
+      this.user_name = res.userInfo.name;
+      this.avatar = res.userInfo.avatar;
+    });
+  },
+
+  beforeDestroy() {
+    this.$bus.$off("user_list");
+    this.$bus.$off("logo_out");
+  }
+};
+</script>
+
+<style scoped>
+.banner {
+  background-color: #394043;
+  line-height: 38px;
+  font-size: 12px;
+  width: 100%;
+}
+.container {
+  width: 75.7%;
+  margin: 0 auto;
+}
+.channelList {
+  width: 469.5px;
+  display: table-cell;
+  white-space: nowrap;
+
+  color: #a9abab;
+}
+.channelList li {
+  display: inline-block;
+  margin-right: 21.5px;
+}
+.selected {
+  color: #ffffff;
+}
+.banner_right {
+  display: table-cell;
+  white-space: nowrap;
+  width: 1000px;
+  text-align: right;
+  color: #fff;
+}
+.logon_icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: url(../../assets/icon.png);
+  background-position: -204px -20px;
+  vertical-align: middle;
+  margin-top: -2px;
+  margin-right: 3px;
+}
+ul li {
+  font-size: 12px;
+  color: #a9abab;
+}
+
+.login_check span,
+.login_check span img,
+.login_check span a {
+  margin-right: 10px;
+}
+</style>

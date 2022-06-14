@@ -1,0 +1,84 @@
+.wrapBox{
+	width: 1150px;
+	margin: 0px auto;
+}
+/*底部*/
+.footerBox{
+	width: 100%;
+	margin-bottom: 0px;
+	/* position: absolute;
+	bottom:0; */
+    /* height: 426px; */
+	background: url(../images/footer-bg.jpg) no-repeat center top #222;
+
+   
+}
+.footerTit{
+	border-bottom: 1px solid #393939;
+}
+.footertitList{
+	height: 75px;
+	line-height: 75px;
+}
+.footertitList li{
+	float: left;
+}
+.footertitList li a{
+	color: #fff;
+    margin-right: 15px;
+    font-size: 14px;
+}
+.footerTit .numper{
+    color: #7dcfa0;
+    line-height: 75px;
+    font-size: 14px;
+} 
+.linkWrap{
+	padding: 13px 0 20px 0;
+    border-bottom: 1px solid #393939;
+    min-height: 170px;
+}
+	/*底部链接*/
+.linkWrap .linktab li{
+	float: left;
+	padding: 10px 10px;
+    background: #121212;
+    color: #888c8e;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.linkWrap .linktab li:hover{
+	background: #394043;
+    color: #fff;
+}
+.linklist_tab a{
+	line-height: 15px;
+	color: #888c8e;
+    font-size: 12px;
+    display: inline-block;
+    margin: 10px 10px 0 0;
+}
+.linkwidth{
+	width: 1000px;
+}
+.linkbottom{
+	margin-top: 25px;
+}
+.linkbottom p,.linkbottom p a{
+	color: #888c8e;
+    font-size: 12px;
+    line-height: 20px;
+}
+.linkbottom p a img{
+	vertical-align: -2px;
+	margin-right: 5px;
+}
+.linklist_tab{
+	display: none;
+}
+.linklist .active{
+	display: block;
+}
