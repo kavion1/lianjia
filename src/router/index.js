@@ -12,12 +12,16 @@ import MyEntrust from "@/views/userhome/right/MyEntrust";
 import MySearch from "@/views/userhome/right/MySearch";
 import HomeDisplay from "@/views/homedisplay";
 import cookie from "js-cookie";
+import map from "@/components/BaiduMap/map.vue";
 import { Message } from "element-ui";
+
 import "element-ui/lib/theme-chalk/index.css";
+
 Vue.use(Router);
 
 export default new Router({
   // linkActiveClass: "active",
+
   routes: [
     {
       path: "/",
@@ -42,7 +46,13 @@ export default new Router({
         if (sessionStorage.getItem("token") || cookie.get("token")) {
           next();
         } else {
-          Message.warning("请先登录");
+          let doms = document.getElementsByClassName(
+            "el-message el-message--warning"
+          )[0];
+
+          if (doms == undefined) {
+            Message.warning({ duration: 1000, message: "请先登录" });
+          }
         }
       }
     },
@@ -55,7 +65,13 @@ export default new Router({
         if (sessionStorage.getItem("token") || cookie.get("token")) {
           next();
         } else {
-          Message.warning("请先登录");
+          let doms = document.getElementsByClassName(
+            "el-message el-message--warning"
+          )[0];
+
+          if (doms == undefined) {
+            Message.warning({ duration: 1000, message: "请先登录" });
+          }
         }
       },
       children: [
@@ -83,6 +99,11 @@ export default new Router({
       path: "/homedisplay",
       name: "homedisplay",
       component: HomeDisplay
+    },
+    {
+      path: "/mapsearch",
+      name: "mapSearch",
+      component: map
     }
   ]
 });

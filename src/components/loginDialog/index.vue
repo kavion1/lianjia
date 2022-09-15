@@ -4,6 +4,7 @@
     :visible.sync="visiblec"
     width="25%"
     @close="close"
+    :close-on-click-modal="false"
     style="overflow:hidden"
   >
     <div v-show="email_login">

@@ -13,18 +13,11 @@ module.exports = {
     assetsPublicPath: "/",
     proxyTable: {
       "/api": {
-        target: "http://120.77.11.66:8002",
+        target: "http://106.52.182.240:8002",
         changeOrigin: true,
         secure: false,
         pathRewrite: {
           "^/api": "/" //本身的接口地址没有"/api"这种通用前缀,所以要rewrite,如果本身有则去掉.
-        }
-      },
-      "/dev-api": {
-        traget: "www.atwx.xyz",
-        changeOrigin: true,
-        pathRewrite: {
-          "^/dev-api": "/"
         }
       }
     },

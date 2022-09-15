@@ -274,9 +274,7 @@ export default {
         .catch(err => {});
       // this.active = 1;
     }
-  },
-
-  mounted() {}
+  }
 };
 </script>
 

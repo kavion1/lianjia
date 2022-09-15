@@ -16,6 +16,15 @@ export default {
         path: "/home"
       });
     }
+  },
+  mounted() {
+    console.log("111");
+    if (sessionStorage.getItem("token") || cookie.get("token")) {
+      return;
+    } else {
+      console.log("this1", this);
+      this.$router.push("/home");
+    }
   }
 };
 </script>

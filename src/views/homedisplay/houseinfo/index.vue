@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div></div>
     <div class="content_houseinfo">
       <div class="content_houseinfo_title">
         {{ houseinfo.rendMethod }}{{ houseinfo.community }}

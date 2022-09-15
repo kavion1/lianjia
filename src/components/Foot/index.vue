@@ -35,7 +35,22 @@
 </template>
 
 <script>
-export default {};
+import cookie from "js-cookie";
+export default {
+  mounted() {
+    if (
+      location.href.split("#/")[1] === "pubhome" ||
+      location.href.split("#/")[1] === "userhome/edituserinfo"
+    ) {
+      if (sessionStorage.getItem("token") || cookie.get("token")) {
+        return;
+      } else {
+        console.log("this1", this);
+        this.$router.push("/home");
+      }
+    }
+  }
+};
 </script>
 
 <style scoped></style>
