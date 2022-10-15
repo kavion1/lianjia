@@ -185,7 +185,7 @@
     </div>
     <!--小区推荐 End-->
     <!--新房新起航 Start-->
-    <div class="newBox">
+    <!-- <div class="newBox">
       <div class="wrapBox">
         <div class="secondTitle newhouseTitle">
           <div class="nametit"></div>
@@ -230,7 +230,7 @@
           </li>
         </ul>
       </div>
-    </div>
+    </div> -->
     <!--新房新起航 End-->
   </div>
 </template>

@@ -1,5 +1,6 @@
 <template>
-  <div class="edituserinfo">
+
+  <div class="edituserinfo" v-loading="loading">
     <!-- 个人信息title -->
     <el-row style="margin-bottom:10px">
       <el-col
@@ -25,19 +26,19 @@
           >
           <div style="min-height:100px">
            <img v-if="userinfo.avatar" :src="userinfo.avatar" class="avatar" style="display:inline-block"></img>
-         
+
             </div>
            <div class="el-upload__tip">
               只能上传jpg/png文件，且不超过500kb
             </div>
-          
+
           </el-upload>
             </el-col>
-         
+
       </el-col>
     </el-row>
     <hr>
-    <el-row :span="24" style="margin-bottom:20px"> 
+    <el-row :span="24" style="margin-bottom:20px">
     <el-col :span="24">
           <el-col
           :span="2"
@@ -54,13 +55,13 @@
 
           ></el-input>
           <span v-else style="line-height:32px;text-align:right">{{
-            userinfo.name
+          userinfo.phonenumber?  userinfo.name:''
           }}</span>
         </el-col>
     </el-col>
 
       </el-row>
-      <el-row :span="24" style="margin-bottom:20px">    
+      <el-row :span="24" style="margin-bottom:20px">
         <el-col
           :span="2"
           style="line-height:32px;text-align:right;margin-right:10px"
@@ -78,10 +79,10 @@
             userinfo.phonenumber
           }}</span>
         </el-col>
-    
+
       </el-row>
       <el-row :span="24" style="margin-bottom:20px">
-     
+
 
         <el-col
           :span="2"
@@ -96,10 +97,10 @@
             v-if="edit"
           ></el-input>
           <span v-else style="line-height:32px;text-align:left">{{
-            userinfo.account
+          userinfo.phonenumber?  userinfo.account:''
           }}</span>
         </el-col>
-   
+
      </el-row>
    <!-- 按钮 -->
   <el-row :span="24">
@@ -121,6 +122,7 @@
 export default {
   data() {
     return {
+      loading:false,
       userinfo: {},
       edit: false,
   }},
@@ -137,12 +139,13 @@ export default {
       "avatar": avatar,
       "id": id,
       "name": name,
-} 
+}
   this.$API.user.changeuserinfo(changeuserinfo).then(res=>{
     this.login_token()
   })
     },
     login_token() {
+      this.loading=true
       this.$API.user
         .login_token()
         .then(result => {
@@ -151,10 +154,11 @@ export default {
             this.$API.exhibitionhome.getuserhomeinfo(1,1).then((result) => {
       console.log(result.data.data.houselist[0].phonnumber,this)
       this.$set(this.userinfo,'phonenumber',result.data.data.houselist[0].phonnumber)
+      this.loading=false
     }).catch(() => {
-      
+      this.loading=false
     });
-          } 
+          }
 
         })
         .catch(err => {
@@ -167,7 +171,7 @@ export default {
   },
   created() {
     this.login_token();
-    
+
   }
 };
 </script>

@@ -177,7 +177,13 @@ export default {
           });
         }
       } else {
-        this.$message.warning("请先登录");
+        const doms = document.getElementsByClassName(
+          "el-message el-message--warning"
+        )[0];
+
+        if (doms == undefined) {
+          this.$message.warning("请先登录");
+        }
       }
     },
     gethouseinfo() {
@@ -246,9 +252,9 @@ export default {
 .content_right {
   float: right;
   width: 43.7%;
-  border: 1px solid #e4e6f0;
+  /* border: 1px solid #e4e6f0; */
   height: 96.9%;
-  padding: 10px 30px 0 30px;
+  padding: 10px 14px 0 30px;
   /* background: blue; */
 }
 .content_right_title {

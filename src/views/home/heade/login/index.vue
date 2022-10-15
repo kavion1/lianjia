@@ -16,8 +16,9 @@
             width="20px"
             height="20px"
             style="border-radius:50%;vertical-align: middle;"
+            @click="TOuserinfo"
           />
-          <a class="login">{{ user_name }}</a>
+          <a class="login" @click="TOuserinfo">{{ user_list.userInfo.name }}</a>
           <a class="register" @click="logo_out">退出登录</a></span
         >
       </div>
@@ -40,6 +41,9 @@ export default {
     };
   },
   methods: {
+    TOuserinfo() {
+      this.$router.replace("/userhome");
+    },
     login() {
       this.$refs.login.changelogin();
       this.$bus.$emit("login", { email_login: true, visiblec: true });
@@ -55,13 +59,27 @@ export default {
       this.$cookie.remove("checked");
       sessionStorage.removeItem("token");
       sessionStorage.removeItem("checked");
-      this.$bus.$emit("logo_out", this.user_list.flag);
+      // this.$bus.$emit("logo_out", this.user_list.flag);
     },
     async login_token() {
-      const res = await this.$API.user.login_token();
-      this.user_list.userInfo = res.data.userInfo;
-      this.avatar = res.data.userInfo.avatar;
-      this.$set(this.user_list, "flag", res.data.flag);
+      if (sessionStorage.getItem("user_list")) {
+        const data = JSON.parse(sessionStorage.getItem("user_list"));
+        console.log(data);
+        this.user_list.userInfo = data.userInfo;
+        this.$set(this.user_list, "flag", data.flag);
+        this.avatar = data.userInfo.avatar;
+      } else {
+        this.$API.user
+          .login_token()
+          .then(result => {
+            this.user_name = result.data.userInfo.name;
+            this.$set(this.user_list, "flag", result.data.flag);
+            this.avatar = result.data.userInfo.avatar;
+          })
+          .catch(err => {
+            throw err;
+          });
+      }
     }
   },
   computed: {

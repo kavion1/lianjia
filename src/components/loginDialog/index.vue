@@ -297,41 +297,18 @@
 
 <script>
 import { login } from "@/api/user";
+import { T } from "caniuse-lite/data/browserVersions";
+import {
+  validateaccount,
+  validatepassword,
+  validatecode,
+  mandatory,
+  CustomRules
+} from "../../utils/rules/rules";
 export default {
   name: "loginDialog",
 
   data() {
-    var validateaccount = (rule, value, callback) => {
-      console.log(rule);
-      const reg = /^\w{1,18}@[a-z0-9]+(\.[a-z]{2,4})+$/i;
-
-      if (reg.test(value)) {
-        callback();
-      } else {
-        callback(new Error("邮箱格式格式错误！"));
-      }
-    };
-    const validatepassword = (rule, value, callback) => {
-      // 密码至少包含 数字和英文，长度6-20
-      const reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{10,20}$/;
-      if (value.length > 6) {
-        if (reg.test(value)) {
-          callback();
-        } else {
-          callback(new Error("密码应包含数字和英文"));
-        }
-      } else {
-        callback(new Error("密码至少为10位"));
-      }
-    };
-    const validatecode = (rule, value, callback) => {
-      const reg = /^\d{6}$/;
-      if (reg.test(value)) {
-        callback();
-      } else {
-        callback(new Error("验证码错误！"));
-      }
-    };
     return {
       user_list: {
         userInfo: {
@@ -356,40 +333,22 @@ export default {
         checked: false
       },
       rules_account: {
-        account: [
-          { required: true, message: "账号不能为空！", trigger: "blur" },
-          { validator: validateaccount, trigger: "blur" }
-        ],
-        password: [
-          { required: true, message: "密码不能为空！", trigger: "blur" }
-          // { validator: validatepassword, trigger: "blur" }
-        ]
+        account: [mandatory("账号不能为空！"), CustomRules(validateaccount)],
+        password: [mandatory("密码不能为空")]
       },
 
       rulesEmail: {
-        email: [
-          { required: true, message: "邮箱不能为空！", trigger: "change" },
-          { validator: validateaccount, trigger: "blur" }
-        ],
+        email: [mandatory("邮箱不能为空！"), CustomRules(validateaccount)],
         verificationCode: [
-          { required: true, message: "验证码不能为空！", trigger: "blur" },
-          { validator: validatecode, trigger: "blur" }
+          mandatory("验证码不能为空！"),
+          CustomRules(validatecode)
         ]
       },
       rules_register: {
-        name: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
-        email: [
-          { required: true, message: "邮箱不能为空！", trigger: "blur" },
-          { validator: validateaccount, trigger: "blur" }
-        ],
-        code: [
-          { required: true, message: "验证码不能为空！", trigger: "blur" },
-          { validator: validatecode, trigger: "blur" }
-        ],
-        password: [
-          { required: true, message: "密码不能为空！", trigger: "blur" },
-          { validator: validatepassword, trigger: "blur" }
-        ]
+        name: [mandatory("用户名不能为空")],
+        email: [mandatory("邮箱不能为空！"), CustomRules(validateaccount)],
+        code: [mandatory("验证码不能为空！"), CustomRules(validatecode)],
+        password: [mandatory("密码不能为空"), CustomRules(validatepassword)]
       },
       visiblec: false,
 
@@ -429,16 +388,20 @@ export default {
       const { email, verificationCode } = this.login_Email_form;
       this.login_Email_form.code = verificationCode;
       this.login_Email_form.account = email;
-      console.log(this.login_Email_form);
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.$API.user
             .email_login(this.login_Email_form)
             .then(result => {
               if (result.data.flag) {
-                this.user_list = result.data;
-                this.$bus.$emit("user_list", result.data);
-                this.$emit("updata", result.data);
+                const { data } = result;
+                this.user_list = data;
+                sessionStorage.setItem(
+                  "user_list",
+                  JSON.stringify(this.user_list)
+                );
+                this.$bus.$emit("user_list", data);
+                this.$emit("updata", data);
                 this.$message.success("登陆成功");
                 this.close();
 
@@ -446,7 +409,7 @@ export default {
                   this.$cookie.set("checked", this.login_account_form.checked, {
                     expires: 7
                   });
-                  this.$cookie.set("token", result.data.token, {
+                  this.$cookie.set("token", data.token, {
                     expires: 7
                   });
                 } else {
@@ -468,7 +431,6 @@ export default {
     },
     // 账号密码登录
     submitForm_account_btn(formName) {
-      console.log("enter");
       const { account, password } = this.login_account_form;
       let login_list = {};
       login_list.account = account;
@@ -479,6 +441,7 @@ export default {
             console.log(result);
             if (result.data.code == 200) {
               this.user_list = result.data;
+              sessionStorage.setItem("user_list", this.user_list);
               this.$bus.$emit("user_list", result.data);
               this.$emit("updata", result.data);
               this.$message.success(result.data.message);
@@ -538,9 +501,6 @@ export default {
         }
       });
     },
-    eye() {
-      this.passwordtype = !this.passwordtype;
-    },
     changeLogin() {
       this.email_register = false;
       this.account_login = true;
@@ -550,18 +510,16 @@ export default {
         this.register_email_form.email != ""
           ? this.register_email_form
           : this.login_Email_form;
-      console.log(email);
 
       if (email) {
         this.$API.user
           .getcode(email)
           .then(result => {
             this.code_btn = true;
-            console.log(this);
             this.code = result.data.data;
             const timer = setInterval(() => {
               this.time--;
-              if (this.time <= 0) {
+              if (this.time <= 0 || this.visiblec == false) {
                 this.time = 120;
                 clearInterval(timer);
                 this.code_btn = false;

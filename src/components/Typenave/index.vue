@@ -44,12 +44,13 @@
           <span>欢迎</span>
           <span>
             <img
+              @click="TOuserinfo"
               :src="avatar"
               width="20px"
               height="20px"
               style="border-radius:50%;vertical-align: middle;"
             />
-            <a class="login">{{ user_name }}</a>
+            <a class="login" @click="TOuserinfo">{{ user_name }}</a>
             <a class="register" @click="logo_out">退出登录</a></span
           >
         </div>
@@ -60,10 +61,11 @@
 </template>
 
 <script>
+import cookies from "@/api/setCooki";
 export default {
   data() {
     return {
-      user_list: {},
+      user_list: { flag: false },
       user_name: "",
       avatar: ""
     };
@@ -71,6 +73,7 @@ export default {
 
   methods: {
     login() {
+      console.log(this);
       this.$refs.login.changelogin();
     },
     register() {
@@ -78,11 +81,8 @@ export default {
     },
     logo_out() {
       this.user_list.flag = false;
-      this.$cookie.remove("token");
-      this.$cookie.remove("checked");
-      sessionStorage.removeItem("token");
-      sessionStorage.removeItem("checked");
-
+      this.ALLremove("cookie");
+      this.ALLremove("sessionStorage");
       if (
         this.$route.name == "pubhome" ||
         this.$route.path.indexOf("userhome") != -1
@@ -90,23 +90,58 @@ export default {
         this.$router.replace("/home");
       }
     },
+    removecookie() {
+      const arr = document.cookie.split(";");
+      let name;
+      arr.map((item, index) => {
+        name = arr[index].split("=")[0].trim();
+        this.$cookie.remove(name);
+      });
+    },
+    removeSessionAndlocal(module) {
+      module = module == "sessionStorage" ? sessionStorage : localStorage;
+      const obj = module;
+      for (let i in obj) {
+        module.removeItem(i);
+      }
+    },
+    ALLremove(Module) {
+      if (Module == "cookie") {
+        this.removecookie();
+      } else if (Module == "sessionStorage" || Module == "localStorage") {
+        this.removeSessionAndlocal(Module);
+      }
+    },
     login_token() {
-      this.$API.user
-        .login_token()
-        .then(result => {
-          this.user_name = result.data.userInfo.name;
-          this.$set(this.user_list, "flag", result.data.flag);
-          this.avatar = result.data.userInfo.avatar;
-        })
-        .catch(err => {
-          throw err;
-        });
+      console.log(sessionStorage);
+
+      if (sessionStorage.getItem("user_list")) {
+        const data = JSON.parse(sessionStorage.getItem("user_list"));
+        console.log(data);
+        this.user_name = data.userInfo.name;
+        this.$set(this.user_list, "flag", data.flag);
+        this.avatar = data.userInfo.avatar;
+      } else {
+        this.$API.user
+          .login_token()
+          .then(result => {
+            this.user_name = result.data.userInfo.name;
+            this.$set(this.user_list, "flag", result.data.flag);
+            this.avatar = result.data.userInfo.avatar;
+          })
+          .catch(err => {
+            throw err;
+          });
+      }
     },
     updata(res) {
       this.$set(this.user_list, "flag", res.flag);
       this.user_name = res.userInfo.name;
       this.avatar = res.userInfo.avatar;
       console.log("uodata");
+    },
+    TOuserinfo() {
+      this.$router.replace("/userhome");
     }
   },
   watch: {

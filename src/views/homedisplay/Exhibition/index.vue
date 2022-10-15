@@ -4,7 +4,7 @@
       已为您找到
       <span style="color:blueviolet">{{ total }}</span>
       套
-      <span v-show="titleselect">{{ contitle }}租房</span>
+      <span v-show="titleselect">{{ contitle }}房源</span>
     </p>
     <p class="content_title" v-show="!titleselect">
       未找到房源
@@ -70,7 +70,7 @@
             </p>
             <p class="content_list_item_other">
               <i class="el-icon-place"></i
-              ><span>房源距离地铁{{ house.distance }}</span>
+              ><span>房源距离{{ house.traffic }}{{ house.distance }}</span>
             </p>
             <span class="content_list_item_price">
               <em>{{ house.money }}</em>

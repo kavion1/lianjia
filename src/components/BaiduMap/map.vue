@@ -24,6 +24,7 @@
         <bm-info-window :show="map.show">云端锦医试点</bm-info-window>
       </bm-marker>
     </baidu-map>
+    <div id="container"></div>
   </div>
 </template>
 

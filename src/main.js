@@ -3,7 +3,7 @@
 import Vue from "vue";
 import App from "./App";
 import router from "./router";
-import vuex from "./store";
+
 import API from "@/api/index";
 import Cookie from "js-cookie";
 import ElementUI from "element-ui";
@@ -32,7 +32,7 @@ new Vue({
     };
   },
   router,
-  vuex,
+
   components: { App },
   template: "<App/>"
 });

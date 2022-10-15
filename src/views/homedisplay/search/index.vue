@@ -9,11 +9,7 @@
         />
       </router-link>
       <ul>
-        <li
-          class="lis"
-          @click="$emit('change', false)"
-          style="   cursor: pointer;"
-        >
+        <li class="lis" @click="research" style="   cursor: pointer;">
           首页
         </li>
         <li class="lis"><a @click="entiretyhome">整租</a></li>
@@ -52,6 +48,10 @@ export default {
     };
   },
   methods: {
+    research() {
+      this.$emit("change", false);
+      this.gethomeinfo({ current: 1, select: "", size: 5 });
+    },
     search() {
       this.$emit("change", false);
       if (!this.type) {

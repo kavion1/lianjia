@@ -26,6 +26,7 @@
         <el-row>
           <el-col :span="18">
             <el-input
+              
               v-model="form.community"
               placeholder="请输入小区名:例如汤臣一品"
             ></el-input
@@ -239,20 +240,16 @@ export default {
         }
       });
       this.form.images = img;
-      console.log("form", this.form);
     },
     handlePreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
-      console.log(this.form.images);
     },
     handerSuccess(file) {
       if (file.code == 200) {
         this.fileList.push(file.data.url);
         this.form.images.push(file.data.url.url);
       }
-      console.log(this.form.images);
-      console.log(file);
     },
     submit() {
       this.$API.pubhome
@@ -272,7 +269,6 @@ export default {
           }
         })
         .catch(err => {});
-      // this.active = 1;
     }
   }
 };

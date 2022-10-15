@@ -17,7 +17,7 @@
         <div class="numper fr">官方客服 8888-88888</div>
       </div>
 
-      <div class="linkbottom">
+      <!-- <div class="linkbottom">
         <p>
           i租客科技有限公司 | 网络经营许可证 16057509号-2 | ©
           Copyright©2010-2017 i租客irendhome.com版权所有
@@ -28,7 +28,7 @@
             11010802024019号</a
           >
         </p>
-      </div>
+      </div> -->
     </div>
   </div>
   <!--底部  End-->
