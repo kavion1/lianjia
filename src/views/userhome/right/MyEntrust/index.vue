@@ -92,7 +92,7 @@ export default {
       this.gethomeinfo();
     },
     deleteRow(a, row) {
-      this.$API.user.SoldOut(row.houseid).then(res => {
+      this.$API.user.SoldOut({ del: 0, ids: [row.houseid] }).then(res => {
         this.gethomeinfo();
         if (row.del == true) {
           this.$message.warning("下架成功");

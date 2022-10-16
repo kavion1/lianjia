@@ -42,7 +42,8 @@ export const gethomeinfo = (current, size) =>
 // 用户下架房源
 export const SoldOut = houseid =>
   requests({
-    url: `/izuke/houselist/delHouse/${houseid}`,
+    url: `/izuke/houselist/delHouse`,
+    data: houseid,
     method: "post"
   });
 // 获取用户关注的房源

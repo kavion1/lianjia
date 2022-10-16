@@ -441,7 +441,10 @@ export default {
             console.log(result);
             if (result.data.code == 200) {
               this.user_list = result.data;
-              sessionStorage.setItem("user_list", this.user_list);
+              sessionStorage.setItem(
+                "user_list",
+                JSON.stringify(this.user_list)
+              );
               this.$bus.$emit("user_list", result.data);
               this.$emit("updata", result.data);
               this.$message.success(result.data.message);
