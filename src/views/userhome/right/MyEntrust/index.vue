@@ -92,15 +92,17 @@ export default {
       this.gethomeinfo();
     },
     deleteRow(a, row) {
-      this.$API.user.SoldOut({ del: 0, ids: [row.houseid] }).then(res => {
-        this.gethomeinfo();
-        if (row.del == true) {
-          this.$message.warning("下架成功");
-        } else {
-          this.$message.success("上架成功");
-        }
-        console.log(row.del);
-      });
+      this.$API.user
+        .SoldOut({ del: row.del == 0 ? 1 : 0, ids: [row.houseid] })
+        .then(res => {
+          this.gethomeinfo();
+          if (row.del == true) {
+            this.$message.warning("下架成功");
+          } else {
+            this.$message.success("上架成功");
+          }
+          console.log(row.del);
+        });
     }
   },
   computed: {},

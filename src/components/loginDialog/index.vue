@@ -297,7 +297,6 @@
 
 <script>
 import { login } from "@/api/user";
-import { T } from "caniuse-lite/data/browserVersions";
 import {
   validateaccount,
   validatepassword,

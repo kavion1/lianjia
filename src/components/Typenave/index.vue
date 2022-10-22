@@ -113,9 +113,7 @@ export default {
       }
     },
     login_token() {
-      console.log(sessionStorage);
-
-      if (sessionStorage.getItem("user_list")) {
+      if (sessionStorage.getItem("user_list") != null) {
         const data = JSON.parse(sessionStorage.getItem("user_list"));
         console.log(data);
         this.user_name = data.userInfo.name;
@@ -125,9 +123,11 @@ export default {
         this.$API.user
           .login_token()
           .then(result => {
+            console.log("logintoken", result.data);
             this.user_name = result.data.userInfo.name;
             this.$set(this.user_list, "flag", result.data.flag);
             this.avatar = result.data.userInfo.avatar;
+            sessionStorage.setItem("user_list", JSON.stringify(result.data));
           })
           .catch(err => {
             throw err;
