@@ -97,6 +97,7 @@
                 style="background:#7de76c;margin-right: 0;"
                 class="content_btn"
                 icon="el-icon-phone-outline"
+                @click="Consultation"
               >
                 电话咨询
               </el-button>
@@ -105,6 +106,123 @@
         </div>
       </div>
       <contentDetail :houseinfo="houseinfo" :floo="floo"></contentDetail>
+      <div
+        class="chatbox"
+        :class="deltes?'':'botominfo'"
+        :style="{
+          display: izkchat,
+        }"
+      >
+        <!-- 聊天界面 -->
+        <div
+        class="chatinterface"
+
+          :style="{display:visble }"
+        >
+          <div
+            style="width:100%;height:10%;position: relative;background-color: #ffffff;"
+          >
+          <div style="margin-left: 5%;">
+            <i style="font-size:14px;line-height: 40px">链家帮帮</i>
+            <span style="font-size:14px;line-height: 40px;color: gray;"
+              >在线人工服务时间：9:00-20:00</span
+            >
+            <span
+              style="position:absolute;right:20px;font-size:30px;line-height: 40px;color: gray;cursor: pointer;"
+              @click="deleteinfo"
+              >×</span
+            >
+          </div>
+          </div>
+          <!-- 消息框 -->
+          <div
+            style="width:100%;height:60%;background-color: rgb(243, 243, 243);"
+          >
+          <ul>
+            <li style="width:100%;display: flex;justify-content: flex-start;margin-top: 1%;">
+
+              <div style="width:10%;height:10%;">
+                <img :src="image" alt="" style="width:100%;height:100%">
+              </div>
+              <div style="width:70%;background-color: red;">
+                您好，链家帮帮很高兴为您服务，请选择您咨询的服务类型
+
+二手房新房房屋租赁
+              </div>
+
+            </li>
+            <li style="width:100%;display: flex;justify-content: flex-end;margin-top: 1%;">
+
+
+<div style="width:70%;background-color: red;">
+  您好，链家帮帮很高兴为您服务，请选择您咨询的服务类型
+
+二手房新房房屋租赁
+</div><div style="width:10%;height:10%;">
+  <img src="../../../../static/chatman.svg" alt="" style="width:100%;height:100%">
+</div>
+
+</li>
+            <!-- <li style="width:80%;display: flex;justify-content: flex-start; ">
+
+              <div style="width:10%;height:10%;">
+                <img src="../../../../static/chatman.svg" alt="" style="width:100%;height:100%">
+              </div>
+              <div style="width:70%;background-color: red;">
+                您好，链家帮帮很高兴为您服务，请选择您咨询的服务类型
+
+二手房新房房屋租赁
+              </div>
+
+            </li> -->
+          </ul>
+
+        </div>
+          <div style="width:100%;height:30%;background-color: #ffffff;display: flex;justify-content: space-between;">
+            <div style="width:68%;height:90%;margin-top: 1.5%;">
+              <textarea style="width:100%;height:100%;resize: none;"/>
+            </div>
+            <div style="width:30%;height:100%;">
+              <el-button type="primary" style="width:100%;height:100%;">发送</el-button></div>
+
+          </div>
+        </div>
+        <!-- 通讯录 -->
+        <div
+          style="width: 30%;height: 100%;background-color: pink;display: flex;flex-direction: column;justify-content: space-between;"
+        >
+          <div
+            style="width:100%;height:10%;background-color: white;display: flex;justify-content:space-between;cursor: pointer;"
+            @click="resetdeletes"
+          >
+            <div style="height:100%;width: 20%;">
+              <img
+                src="../../../../static/chat.svg"
+                alt=""
+                style="height:100%;width: 100%;"
+              />
+            </div>
+            <div style="width:70%">
+              <span style="font-size:14px;line-height: 40px;color: gray;margin"
+                >在线咨询</span
+              >
+            </div>
+          </div>
+          <div style="width:100%;height:90%;background-color: white;">
+          <ul style="width:100%;height:100%">
+            <li style="width:100%;height:15%;border-bottom: 1px solid #e9f0ec;display: flex;justify-content: space-between;cursor: pointer;background-color: gray;">
+            <div style="width:20%;height:100%;margin-left: 20px;"><img src="../../../../static/chatman.svg" alt="" style="width:70%;height:100%"></div>
+            <div style="width:70%;height:100%">
+              <div style="height:50%;width:80%;font-size: 14px;font-weight: bold;line-height: 36px;"><span>链家帮帮</span></div>
+              <div style="height:50%;width:80%;font-size: 8px;line-height: 20px;">官方人工客服</div>
+            </div>
+            </li>
+          </ul>
+          </div>
+        </div>
+
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -122,7 +240,12 @@ export default {
         ? this.$attrs.houseinfos.houseid
         : "",
       houseinfo: this.$attrs.houseinfos ? this.$attrs.houseinfos : {},
-      guanzhu: true
+      guanzhu: true,
+      deltes:true,
+      visble:'',
+      izkchat:'none',
+      // image:''
+
     };
   },
 
@@ -140,6 +263,14 @@ export default {
     this.getSwiper();
   },
   methods: {
+    deleteinfo(){
+      this.deltes=false
+      this.visble='none';
+    },
+    resetdeletes(){
+      this.deltes=true
+      this.visble='';
+    },
     getSwiper() {
       let mySwiper = new Swiper(".swiper-container", {
         //direction: 'vertical', 垂直切换选项
@@ -192,12 +323,15 @@ export default {
 
         this.houseinfo = res.data.data.houseInfo;
       });
+    },
+    Consultation() {
+      this.izkchat = "";
     }
   },
   components: { contentDetail },
   computed: {
-    floo() {
-      return parseInt(this.houseinfo.hnumber[0]) < 5 ? "低楼层" : "高楼层";
+    image:function(){
+      return JSON.parse(sessionStorage.getItem('user_list')).userInfo.avatar
     }
   }
 };
@@ -379,5 +513,29 @@ export default {
   margin-top: 0;
   text-align: center;
   width: 80%;
+}
+.chatbox {
+  width: 620px;
+  height: 434px;
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  z-index: 2;
+  right: 0;
+  bottom: 0;
+  box-shadow: 0 0 30px 0 rgb(0 0 0 / 45%);
+  transition: bottom 0.2s ease 0s;
+}
+.chatinterface {
+  width: 70%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid #ddd;
+}
+.botominfo{
+  bottom: -390.6px;
+  right:-434px
 }
 </style>

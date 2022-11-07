@@ -50,10 +50,21 @@ const CustomRules = (validator, trigger = "blur") => {
   return { validator, trigger };
 };
 
+const Pubrules = rule => {
+  let objrules = {};
+
+  for (let i in rule) {
+    objrules[rule[i]] = [mandatory("此项必填", "change")];
+  }
+
+  console.log(objrules);
+  return objrules;
+};
 export {
   validateaccount,
   validatepassword,
   validatecode,
   mandatory,
-  CustomRules
+  CustomRules,
+  Pubrules
 };

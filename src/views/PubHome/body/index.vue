@@ -14,19 +14,24 @@
       ></el-step>
       <el-step title="房源成功发布" icon="el-icon-picture"></el-step>
     </el-steps>
-    <el-form :model="form" label-width="120px">
-      <el-form-item label="小区所在城市">
+    <el-form
+      :model="form"
+      label-width="120px"
+      :rules="Pubsrules"
+      :show-message="showfalse"
+      ref="ruleForm"
+    >
+      <el-form-item label="小区所在城市" prop="country">
         <el-row>
           <el-col :span="18">
             <el-input v-model="form.country" placeholder="例如武汉"></el-input
           ></el-col>
         </el-row>
       </el-form-item>
-      <el-form-item label="小区名称">
+      <el-form-item label="小区名称" prop="community">
         <el-row>
           <el-col :span="18">
             <el-input
-              
               v-model="form.community"
               placeholder="请输入小区名:例如汤臣一品"
             ></el-input
@@ -38,25 +43,30 @@
         <el-row>
           <el-row :span="19" style="display:flex;justify-content:start;">
             <el-col :span="6">
-              <el-input
-                v-model="form.floor"
-                placeholder="楼栋号"
-                style="width: 210px;"
-              ></el-input
-            ></el-col>
+              <el-form-item prop="floor">
+                <el-input
+                  v-model="form.floor"
+                  placeholder="楼栋号"
+                  style="width: 210px;"
+                ></el-input>
+              </el-form-item>
+            </el-col>
             <el-col :span="6">
-              <el-input
-                v-model="form.cell"
-                placeholder="单元号"
-                style="width: 210px;"
-              ></el-input
-            ></el-col>
+              <el-form-item prop="cell">
+                <el-input
+                  v-model="form.cell"
+                  placeholder="单元号"
+                  style="width: 210px;"
+                ></el-input
+              ></el-form-item>
+            </el-col>
             <el-col :span="6">
-              <el-input
-                v-model="form.hnumber"
-                placeholder="门牌号"
-                style="width: 220px;"
-              ></el-input></el-col
+              <el-form-item prop="hnumber">
+                <el-input
+                  v-model="form.hnumber"
+                  placeholder="门牌号"
+                  style="width: 220px;"
+                ></el-input></el-form-item></el-col
           ></el-row>
         </el-row>
       </el-form-item>
@@ -64,31 +74,38 @@
         <el-row>
           <el-row :span="19" style="display:flex;justify-content:start;">
             <el-col :span="6" style="display:flex;justify-content:start;">
-              <el-input
-                v-model="form.houseArea"
-                placeholder="房屋面积,例如70㎡"
-                style="width: 200px;font-size:12px"
-              ></el-input
+              <el-form-item prop="houseArea">
+                <el-input
+                  v-model="form.houseArea"
+                  placeholder="房屋面积,例如70㎡"
+                  style="width: 200px;font-size:12px"
+                ></el-input></el-form-item
               ><el-col :span="3" style="font-size:10px">㎡</el-col></el-col
             >
             <el-col :span="6">
-              <el-input
-                v-model="form.houserDirection"
-                placeholder="朝向"
-                style="width: 200px;"
-              ></el-input
+              <el-form-item prop="houserDirection">
+                <el-input
+                  v-model="form.houserDirection"
+                  placeholder="朝向"
+                  style="width: 200px;"
+                ></el-input></el-form-item
             ></el-col>
             <el-col :span="6">
-              <el-input
-                v-model="form.housePattern"
-                placeholder="房屋格局，如两室一厅"
-                style="width:220px;font-size:12px"
-              ></el-input></el-col
+              <el-form-item prop="housePattern">
+                <el-input
+                  v-model="form.housePattern"
+                  placeholder="房屋格局，如两室一厅"
+                  style="width:220px;font-size:12px"
+                ></el-input></el-form-item></el-col
           ></el-row>
         </el-row>
       </el-form-item>
 
-      <el-form-item label="出租方式" style="float: left;margin-right: 76px;">
+      <el-form-item
+        label="出租方式"
+        style="float: left;margin-right: 76px;"
+        prop="rendMethod"
+      >
         <el-row :span="8" style="display:flex;justify-content:start;">
           <el-col :span="24">
             <el-select
@@ -102,7 +119,11 @@
           </el-col>
         </el-row>
       </el-form-item>
-      <el-form-item label="是否有电梯" style="display:inline-block">
+      <el-form-item
+        label="是否有电梯"
+        style="display:inline-block"
+        prop="elevator"
+      >
         <el-row :span="8">
           <el-col :span="24">
             <el-select
@@ -118,17 +139,20 @@
       </el-form-item>
       <el-form-item label="最近的出行工具">
         <el-row>
-          <el-col :span="10"
-            ><el-input
-              v-model="form.traffic"
-              placeholder="例如公交、地铁"
-            ></el-input
+          <el-col :span="10">
+            <el-form-item prop="traffic">
+              <el-input
+                v-model="form.traffic"
+                placeholder="例如公交、地铁"
+              ></el-input></el-form-item
           ></el-col>
-          <el-col :span="2" style="margin-left:10px"
-            ><el-input
-              v-model="form.distance"
-              placeholder="例如200m"
-            ></el-input>
+          <el-col :span="2" style="margin-left:10px">
+            <el-form-item prop="distance">
+              <el-input
+                v-model="form.distance"
+                placeholder="例如200m"
+              ></el-input
+            ></el-form-item>
           </el-col>
         </el-row>
       </el-form-item>
@@ -151,7 +175,7 @@
           </el-dialog>
         </el-upload>
       </el-form-item>
-      <el-form-item label="期望售价">
+      <el-form-item label="期望售价" prop="money">
         <el-row style="display:flex;justify-content:start">
           <el-col :span="17">
             <el-input
@@ -165,7 +189,7 @@
         </el-row>
       </el-form-item>
       <!-- </el-form> -->
-      <el-form-item label="称呼">
+      <el-form-item label="称呼" prop="name">
         <el-row>
           <el-col :span="18">
             <el-input
@@ -175,7 +199,7 @@
           ></el-col>
         </el-row>
       </el-form-item>
-      <el-form-item label="联系方式">
+      <el-form-item label="联系方式" prop="phonnumber">
         <el-row>
           <el-col :span="18">
             <el-input
@@ -188,7 +212,10 @@
       <el-form-item>
         <el-row>
           <el-col :span="18">
-            <el-button type="primary" style="width:200px;" @click="submit"
+            <el-button
+              type="primary"
+              style="width:200px;"
+              @click="submit('ruleForm')"
               >提交</el-button
             ></el-col
           >
@@ -200,9 +227,27 @@
 
 <script>
 // import axios from "axios";
+import { Pubrules } from "../../../utils/rules/rules";
 export default {
   data() {
     return {
+      ruleForm: {
+        country: "",
+        community: "",
+        floor: "",
+        cell: "",
+        houserDirection: "",
+        houseArea: "",
+        housePattern: "",
+        rendMethod: "",
+        elevator: "",
+        traffic: "",
+        distance: "",
+        hnumber: "",
+        money: "",
+        name: "",
+        phonnumber: ""
+      },
       form: {
         country: "",
         community: "",
@@ -221,10 +266,12 @@ export default {
         phonnumber: "",
         images: []
       },
+      Pubsrules: "",
       fileList: [],
       dialogImageUrl: "",
       dialogVisible: false,
-      active: 0
+      active: 0,
+      showfalse: false
     };
   },
   methods: {
@@ -251,25 +298,48 @@ export default {
         this.form.images.push(file.data.url.url);
       }
     },
-    submit() {
-      this.$API.pubhome
-        .submitHomeInfo(this.form)
-        .then(result => {
-          if ((result.data.code = 200)) {
-            this.$message.success(
-              "提交成功,请耐心等待平台审核，审核通过后将以邮件的方式发送到您的邮箱！"
-            );
+    submit(ruleForm) {
+      this.showfalse = true;
+      console.log(
+        this.$refs[ruleForm].validate(valid => {
+          if (valid) {
+            this.$API.pubhome
+              .submitHomeInfo(this.form)
+              .then(result => {
+                if ((result.data.code = 200)) {
+                  this.$message.success(
+                    "提交成功,请耐心等待平台审核，审核通过后将以邮件的方式发送到您的邮箱！"
+                  );
 
-            Object.assign(this.$data, this.$options.data());
+                  Object.assign(this.$data, this.$options.data());
 
-            this.active = 1;
-            this.$scrollTo();
-          } else {
-            this.$message.warning("提交失败");
+                  this.active = 1;
+                  this.$scrollTo();
+                } else {
+                  this.$message.warning("提交失败");
+                }
+              })
+              .catch(err => {});
           }
         })
-        .catch(err => {});
+      );
     }
+
+    // Pubrules(rule, ruleNname) {
+    //   let objrules = {};
+    //   objrules[ruleNname] = {};
+    //   for (let i in rule) {
+    //     objrules[ruleNname][i] = [{ required: true, trigger: "blur" }];
+    //   }
+
+    //   console.log(objrules);
+    //   return objrules;
+    // }
+  },
+
+  mounted() {
+    console.log(Object.keys(this.form));
+    this.Pubsrules = Pubrules(Object.keys(this.form));
   }
 };
 </script>

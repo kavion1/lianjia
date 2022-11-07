@@ -238,6 +238,7 @@ export default {
   margin-top: 30px;
 }
 .content_detail ul {
+  z-index: 1;
   height: 74px;
   background: #f5f5f5;
   border-radius: 2px;
