@@ -99,7 +99,7 @@
                 icon="el-icon-phone-outline"
                 @click="Consultation"
               >
-                电话咨询
+                在线咨询
               </el-button>
             </div>
           </div>
@@ -141,33 +141,34 @@
           <ul>
             <li style="width:100%;display: flex;justify-content: flex-start;margin-top: 1%;">
 
+          <div style="width:10%;height:10%;">
+            <img src="../../../../static/chatman.svg" alt="" style="width:100%;height:100%;border-radius: 100px;">
+          </div>
+          <div style="max-width:70%;background-color: gray;border-radius: 3px;margin-right: 5px;text-align: left;">
+            123
+          </div>
+            </li>
+
+            <li style="width:100%;display: flex;justify-content: flex-end;margin-top: 1%;" v-for="i in sendmessages" :key="i.key" >
+              <div style="width:70%;background-color: red;border-radius: 3px;margin-left: 5px;" id="sendchat">
+       {{i.message}}
+              </div>
               <div style="width:10%;height:10%;">
                 <img :src="image" alt="" style="width:100%;height:100%;border-radius: 100px;">
               </div>
-              <div style="width:70%;background-color: red;border-radius: 3px;margin-left: 5px;">
-       123
-              </div>
+
 
             </li>
-            <li style="width:100%;display: flex;justify-content: flex-end;margin-top: 1%;">
 
-
-<div style="max-width:70%;background-color: gray;border-radius: 3px;margin-right: 5px;text-align: left;">
-  123
-</div><div style="width:10%;height:10%;">
-  <img src="../../../../static/chatman.svg" alt="" style="width:100%;height:100%;border-radius: 100px;">
-</div>
-
-</li>
           </ul>
 
         </div>
           <div style="width:100%;height:30%;background-color: #ffffff;display: flex;justify-content: space-between;">
             <div style="width:68%;height:90%;margin-top: 1.5%;">
-              <textarea style="width:100%;height:100%;resize: none;"/>
+              <textarea style="width:100%;height:100%;resize: none; " v-model="areamessage"/>
             </div>
             <div style="width:30%;height:100%;">
-              <el-button type="primary" style="width:100%;height:100%;">发送</el-button></div>
+              <el-button type="primary" style="width:100%;height:100%;" @click="sendmessage">发送</el-button></div>
 
           </div>
         </div>
@@ -218,7 +219,7 @@ import Swiper from "swiper";
 import "swiper/css/swiper.css";
 import contentDetail from "./contentDetail";
 import { Message } from "element-ui";
-
+import {ws,send} from "../../../utils/websocekt"
 export default {
   data() {
     return {
@@ -231,6 +232,8 @@ export default {
       visble:'',
       izkchat:'none',
       // image:''
+      sendmessages:[],
+      areamessage:''
 
     };
   },
@@ -310,9 +313,20 @@ export default {
         this.houseinfo = res.data.data.houseInfo;
       });
     },
+    sendmessage(){
+      const obj={
+        message:this.areamessage,
+        key:this.sendmessages.length
+      }
+      send(this.areamessage)
+      this.sendmessages.push(obj)
+      const domwidth=document.getElementById('sendchat')
+      domwidth.scrollTop=domwidth.scrollHeight
+    },
     Consultation() {
       if(sessionStorage.getItem('user_list')){
         this.izkchat = "";
+        ws()
       }else{
         let doms = document.getElementsByClassName(
             "el-message el-message--warning"
