@@ -74,7 +74,7 @@
               </li>
               <li>
                 朝向楼层:<span
-                  >{{ houseinfo.houserDirection }} {{ floo }}/{{
+                  >{{ houseinfo.houserDirection }} {{ houseinfo.floor }}/{{
                     houseinfo.hnumber[0]
                   }}层</span
                 >
@@ -136,45 +136,29 @@
           </div>
           <!-- 消息框 -->
           <div
-            style="width:100%;height:60%;background-color: rgb(243, 243, 243);"
+            style="width:100%;height:60%;background-color: rgb(243, 243, 243);overflow: auto;"
           >
           <ul>
             <li style="width:100%;display: flex;justify-content: flex-start;margin-top: 1%;">
 
               <div style="width:10%;height:10%;">
-                <img :src="image" alt="" style="width:100%;height:100%">
+                <img :src="image" alt="" style="width:100%;height:100%;border-radius: 100px;">
               </div>
-              <div style="width:70%;background-color: red;">
-                您好，链家帮帮很高兴为您服务，请选择您咨询的服务类型
-
-二手房新房房屋租赁
+              <div style="width:70%;background-color: red;border-radius: 3px;margin-left: 5px;">
+       123
               </div>
 
             </li>
             <li style="width:100%;display: flex;justify-content: flex-end;margin-top: 1%;">
 
 
-<div style="width:70%;background-color: red;">
-  您好，链家帮帮很高兴为您服务，请选择您咨询的服务类型
-
-二手房新房房屋租赁
+<div style="max-width:70%;background-color: gray;border-radius: 3px;margin-right: 5px;text-align: left;">
+  123
 </div><div style="width:10%;height:10%;">
-  <img src="../../../../static/chatman.svg" alt="" style="width:100%;height:100%">
+  <img src="../../../../static/chatman.svg" alt="" style="width:100%;height:100%;border-radius: 100px;">
 </div>
 
 </li>
-            <!-- <li style="width:80%;display: flex;justify-content: flex-start; ">
-
-              <div style="width:10%;height:10%;">
-                <img src="../../../../static/chatman.svg" alt="" style="width:100%;height:100%">
-              </div>
-              <div style="width:70%;background-color: red;">
-                您好，链家帮帮很高兴为您服务，请选择您咨询的服务类型
-
-二手房新房房屋租赁
-              </div>
-
-            </li> -->
           </ul>
 
         </div>
@@ -225,6 +209,7 @@
       </div>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -232,6 +217,7 @@ import Swiper from "swiper";
 //引用swiper样式
 import "swiper/css/swiper.css";
 import contentDetail from "./contentDetail";
+import { Message } from "element-ui";
 
 export default {
   data() {
@@ -325,15 +311,31 @@ export default {
       });
     },
     Consultation() {
-      this.izkchat = "";
+      if(sessionStorage.getItem('user_list')){
+        this.izkchat = "";
+      }else{
+        let doms = document.getElementsByClassName(
+            "el-message el-message--warning"
+          )[0];
+
+          if (doms == undefined) {
+            Message.warning({ duration: 1000, message: "请先登录" });
+          }
+
     }
   },
   components: { contentDetail },
   computed: {
     image:function(){
-      return JSON.parse(sessionStorage.getItem('user_list')).userInfo.avatar
+      if(sessionStorage.getItem('user_list')){
+        const imgurl=JSON.parse(sessionStorage.getItem('user_list')).userInfo.avatar
+        return imgurl
+      }else{
+        return ''
+      }
+
     }
-  }
+  }}
 };
 </script>
 
@@ -537,5 +539,29 @@ export default {
 .botominfo{
   bottom: -390.6px;
   right:-434px
+}
+/*定义滚动条高宽及背景
+ 高宽分别对应横竖滚动条的尺寸*/
+ ::-webkit-scrollbar
+{
+    width:5px;
+    height:16px;
+    background-color:#F5F5F5;
+}
+/*定义滚动条轨道
+ 内阴影+圆角*/
+::-webkit-scrollbar-track
+{
+    -webkit-box-shadow:inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius:10px;
+    background-color:#F5F5F5;
+}
+/*定义滑块
+ 内阴影+圆角*/
+::-webkit-scrollbar-thumb
+{
+    border-radius:10px;
+    -webkit-box-shadow:inset 0 0 6px rgba(0,0,0,.3);
+    background-color:#555;
 }
 </style>
