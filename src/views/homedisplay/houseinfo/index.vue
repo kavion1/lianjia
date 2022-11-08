@@ -74,7 +74,7 @@
               </li>
               <li>
                 朝向楼层:<span
-                  >{{ houseinfo.houserDirection }} {{ houseinfo.floor }}/{{
+                  >{{ houseinfo.houserDirection }} {{floo }}/{{
                     houseinfo.hnumber[0]
                   }}层</span
                 >
@@ -105,7 +105,7 @@
           </div>
         </div>
       </div>
-      <contentDetail :houseinfo="houseinfo" :floo="floo"></contentDetail>
+      <contentDetail :houseinfo="houseinfo" :floo="floo" ></contentDetail>
       <div
         class="chatbox"
         :class="deltes?'':'botominfo'"
@@ -323,7 +323,7 @@ export default {
           }
 
     }
-  },
+  }},
   components: { contentDetail },
   computed: {
     image:function(){
@@ -334,8 +334,11 @@ export default {
         return ''
       }
 
+    },
+    floo:function() {
+      return parseInt(this.houseinfo.hnumber[0]) < 5 ? "低楼层" : "高楼层";
     }
-  }}
+  }
 };
 </script>
 
