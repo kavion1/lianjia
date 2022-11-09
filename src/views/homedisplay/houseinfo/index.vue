@@ -138,7 +138,7 @@
           <div
             style="width:100%;height:60%;background-color: rgb(243, 243, 243);overflow: auto;"
           >
-          <ul>
+          <ul ref="sendchat">
             <li style="width:100%;display: flex;justify-content: flex-start;margin-top: 1%;">
 
           <div style="width:10%;height:10%;">
@@ -150,7 +150,7 @@
             </li>
 
             <li style="width:100%;display: flex;justify-content: flex-end;margin-top: 1%;" v-for="i in sendmessages" :key="i.key" >
-              <div style="width:70%;background-color: red;border-radius: 3px;margin-left: 5px;" id="sendchat">
+              <div style="width:70%;background-color: red;border-radius: 3px;margin-left: 5px;" >
        {{i.message}}
               </div>
               <div style="width:10%;height:10%;">
@@ -250,6 +250,7 @@ export default {
   },
   mounted() {
     this.getSwiper();
+    ws()
   },
   methods: {
     deleteinfo(){
@@ -314,19 +315,26 @@ export default {
       });
     },
     sendmessage(){
+      console.log("🚀 ~ file: index.vue ~ line 326 ~ this.$nextTick ~ this.$ref.sendchat", this.$ref.sendchat)
       const obj={
         message:this.areamessage,
         key:this.sendmessages.length
       }
       send(this.areamessage)
       this.sendmessages.push(obj)
-      const domwidth=document.getElementById('sendchat')
-      domwidth.scrollTop=domwidth.scrollHeight
+      this.$nextTick(()=>{
+
+
+      })
+
+      this.$ref.sendchat.scrollTop=this.$ref.sendchat.scrollHeight
+
+
     },
     Consultation() {
       if(sessionStorage.getItem('user_list')){
         this.izkchat = "";
-        ws()
+
       }else{
         let doms = document.getElementsByClassName(
             "el-message el-message--warning"

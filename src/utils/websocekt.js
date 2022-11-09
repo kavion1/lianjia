@@ -1,4 +1,5 @@
 let websocket = null;
+let intervalTime;
 const isWebsocket = () => {
   try {
     websocket.readyState == 1 ? websocket.close() : "";
@@ -35,6 +36,7 @@ const ws = async () => {
 const onerror = () => {
   websocket.onerror = error => {
     console.log("error", error);
+    reconnection();
   };
 };
 
@@ -42,6 +44,7 @@ const onerror = () => {
 const onopen = () => {
   websocket.onopen = open => {
     console.log("连接成功", open);
+    ping();
   };
 };
 
@@ -53,8 +56,28 @@ const onmessage = () => {
 const send = message => {
   try {
     websocket.send(message);
+    console.log(document.getElementById("sendchat"));
   } catch (error) {
     console.log("发送失败:", error);
+  }
+};
+
+const ping = (time = 5000, ping = "ping") => {
+  clearInterval(intervalTime);
+  websocket.send(ping);
+  intervalTime = setInterval(() => {
+    websocket.send(ping);
+  }, time);
+};
+
+// 连接失败重连;
+const reconnection = () => {
+  websocket.close();
+  clearInterval(intervalTime);
+  if (websocket.readyState !== 3) {
+    websocket = null;
+    console.log("连接失败重连");
+    ws();
   }
 };
 export { ws, send };
