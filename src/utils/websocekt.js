@@ -1,8 +1,13 @@
+import Vue from "vue";
+
 let websocket = null;
 let intervalTime;
 const isWebsocket = () => {
   try {
-    websocket.readyState == 1 ? websocket.close() : "";
+    if (websocket) {
+      websocket.readyState == 1 ? websocket.close() : "";
+      console.log("123");
+    }
   } catch (error) {
     throw error;
   }
@@ -19,39 +24,46 @@ const isWebsocketInwindow = () => {
 };
 
 const ws = async () => {
-  // await isWebsocket();
+  await isWebsocket();
   await isWebsocketInwindow();
   const userID = JSON.parse(sessionStorage.getItem("user_list")).userInfo
     .account;
   const Administrator = "admin@163.com";
   websocket = new WebSocket(
-    `ws://www.atwx.xyz:8002/api/websocket/${userID}/${Administrator}`
+    `ws://www.atwx.xyz:8002/api/websocket/${Administrator}/1751140932@qq.com`
+    // `ws://www.atwx.xyz:8002/api/websocket/${userID}/${Administrator}`
   );
-  onerror();
+  websocket.onmessage = e => {
+    onmessage(e);
+  };
+  websocket.onerror = e => {
+    onerror(e);
+  };
+  websocket.onopen = e => {
+    onopen(e);
+  };
   onopen();
-  onmessage();
+  // onmessage();
+  websocket.onclose = e => {
+    console.log("e", e);
+  };
 };
 
 // 连接失败
-const onerror = () => {
-  websocket.onerror = error => {
-    console.log("error", error);
-    reconnection();
-  };
+const onerror = error => {
+  console.log("error", error);
+  // reconnection();
 };
 
 // 连接成功
-const onopen = () => {
-  websocket.onopen = open => {
-    console.log("连接成功", open);
-    ping();
-  };
+const onopen = open => {
+  console.log("连接成功", open);
+  // ping();
 };
 
-const onmessage = () => {
-  websocket.onmessage = acceptMessge => {
-    console.log("接收消息:", acceptMessge);
-  };
+const onmessage = acceptMessge => {
+  console.log("接收消息:", acceptMessge, Vue.prototype);
+  Vue.prototype.$message = acceptMessge;
 };
 const send = message => {
   try {
@@ -80,4 +92,4 @@ const reconnection = () => {
     ws();
   }
 };
-export { ws, send };
+export { ws, send, onmessage };

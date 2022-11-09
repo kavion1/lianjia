@@ -136,9 +136,9 @@
           </div>
           <!-- 消息框 -->
           <div
-            style="width:100%;height:60%;background-color: rgb(243, 243, 243);overflow: auto;"
+            style="width:100%;height:60%;background-color: rgb(243, 243, 243);overflow: auto;" ref="sendchat" id="sendchat"
           >
-          <ul ref="sendchat">
+          <ul >
             <li style="width:100%;display: flex;justify-content: flex-start;margin-top: 1%;">
 
           <div style="width:10%;height:10%;">
@@ -150,7 +150,7 @@
             </li>
 
             <li style="width:100%;display: flex;justify-content: flex-end;margin-top: 1%;" v-for="i in sendmessages" :key="i.key" >
-              <div style="width:70%;background-color: red;border-radius: 3px;margin-left: 5px;" >
+              <div style="background-color: red;border-radius: 3px;margin-left: 5px;white-space: pre-line;" >
        {{i.message}}
               </div>
               <div style="width:10%;height:10%;">
@@ -219,7 +219,8 @@ import Swiper from "swiper";
 import "swiper/css/swiper.css";
 import contentDetail from "./contentDetail";
 import { Message } from "element-ui";
-import {ws,send} from "../../../utils/websocekt"
+import {ws,send,onmessage} from "../../../utils/websocekt"
+import Vue from 'vue';
 export default {
   data() {
     return {
@@ -233,8 +234,8 @@ export default {
       izkchat:'none',
       // image:''
       sendmessages:[],
-      areamessage:''
-
+      areamessage:'',
+      message:Vue.prototype.$message
     };
   },
 
@@ -249,8 +250,18 @@ export default {
     this.$scrollTo();
   },
   mounted() {
+    // this.$bus.$on('message',res=>{
+
+    // })
     this.getSwiper();
     ws()
+    window.addEventListener('onmessage',onmessage)
+    window.dispatchEvent(new CustomEvent('onmessage',{
+
+    }))
+  },
+  destroyed(){
+    window.removeEventListener('onmessage',onmessage)
   },
   methods: {
     deleteinfo(){
@@ -315,19 +326,18 @@ export default {
       });
     },
     sendmessage(){
-      console.log("🚀 ~ file: index.vue ~ line 326 ~ this.$nextTick ~ this.$ref.sendchat", this.$ref.sendchat)
       const obj={
-        message:this.areamessage,
+        message:this.areamessage.trimLeft(),
         key:this.sendmessages.length
       }
-      send(this.areamessage)
+
       this.sendmessages.push(obj)
+      send(this.areamessage)
       this.$nextTick(()=>{
-
-
+        this.$refs.sendchat.scrollTop=this.$refs.sendchat.scrollHeight
       })
 
-      this.$ref.sendchat.scrollTop=this.$ref.sendchat.scrollHeight
+
 
 
     },
@@ -359,6 +369,11 @@ export default {
     },
     floo:function() {
       return parseInt(this.houseinfo.hnumber[0]) < 5 ? "低楼层" : "高楼层";
+    }
+  },
+  watch:{
+    message:function(val,oldval){
+      console.log(val,oldval);
     }
   }
 };
