@@ -30,8 +30,8 @@ const ws = async () => {
     .account;
   const Administrator = "admin@163.com";
   websocket = new WebSocket(
-    `ws://www.atwx.xyz:8002/api/websocket/${Administrator}/1751140932@qq.com`
-    // `ws://www.atwx.xyz:8002/api/websocket/${userID}/${Administrator}`
+    // `ws://www.atwx.xyz:8002/api/websocket/${Administrator}/wangxrz@163.com`
+    `ws://www.atwx.xyz:8002/api/websocket/${userID}/${Administrator}`
   );
   websocket.onmessage = e => {
     onmessage(e);
@@ -42,33 +42,47 @@ const ws = async () => {
   websocket.onopen = e => {
     onopen(e);
   };
-  onopen();
-  // onmessage();
   websocket.onclose = e => {
-    console.log("e", e);
+    onerror(e);
   };
 };
 
 // 连接失败
 const onerror = error => {
+  console.info(error.code + " " + error.reason + " " + error.wasClean);
   console.log("error", error);
-  // reconnection();
+  reconnection();
 };
 
 // 连接成功
 const onopen = open => {
   console.log("连接成功", open);
-  // ping();
+  ping();
 };
 
 const onmessage = acceptMessge => {
-  console.log("接收消息:", acceptMessge, Vue.prototype);
-  Vue.prototype.$message = acceptMessge;
+  // console.log("接收消息:", acceptMessge, Vue.prototype);
+  window.dispatchEvent(
+    new CustomEvent("onmessage", {
+      detail: {
+        data: acceptMessge.data
+      }
+    })
+  );
+};
+
+const pingORmes = msg => {
+  return msg == "ping" ? JSON.stringify({ msg: msg }) : JSON.stringify({ msg });
 };
 const send = message => {
   try {
-    websocket.send(message);
-    console.log(document.getElementById("sendchat"));
+    if (websocket.readyState === 1) {
+      // websocket.send();
+      websocket.send(pingORmes(message));
+    } else {
+      reconnection();
+      send(message);
+    }
   } catch (error) {
     console.log("发送失败:", error);
   }
@@ -76,9 +90,9 @@ const send = message => {
 
 const ping = (time = 5000, ping = "ping") => {
   clearInterval(intervalTime);
-  websocket.send(ping);
+  send(ping);
   intervalTime = setInterval(() => {
-    websocket.send(ping);
+    send(ping);
   }, time);
 };
 
@@ -86,10 +100,21 @@ const ping = (time = 5000, ping = "ping") => {
 const reconnection = () => {
   websocket.close();
   clearInterval(intervalTime);
-  if (websocket.readyState !== 3) {
+  if (websocket.readyState == 3) {
     websocket = null;
     console.log("连接失败重连");
     ws();
   }
 };
-export { ws, send, onmessage };
+export { ws, send, onmessage, websocket };
+// 0 (WebSocket.CONNECTING)
+// 正在链接中
+
+// 1 (WebSocket.OPEN)
+// 已经链接并且可以通讯
+
+// 2 (WebSocket.CLOSING)
+// 连接正在关闭
+
+// 3 (WebSocket.CLOSED)
+// 连接已关闭或者没有链接成功

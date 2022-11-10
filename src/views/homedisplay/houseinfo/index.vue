@@ -139,27 +139,26 @@
             style="width:100%;height:60%;background-color: rgb(243, 243, 243);overflow: auto;" ref="sendchat" id="sendchat"
           >
           <ul >
-            <li style="width:100%;display: flex;justify-content: flex-start;margin-top: 1%;">
-
-          <div style="width:10%;height:10%;">
+            <li style="width:100%;margin-top: 1%;" v-for="i in messages" :key="i.key">
+              <!-- 左 -->
+              <div style="display: flex;justify-content: flex-start;">
+          <div style="width:10%;height:10%;" v-show="i.acept">
             <img src="../../../../static/chatman.svg" alt="" style="width:100%;height:100%;border-radius: 100px;">
           </div>
-          <div style="max-width:70%;background-color: gray;border-radius: 3px;margin-right: 5px;text-align: left;">
-            123
+          <div style="max-width:70%;background-color: gray;border-radius: 3px;margin-right: 5px;text-align: left;" v-show="i.acept">
+            {{i.message}}
           </div>
-            </li>
-
-            <li style="width:100%;display: flex;justify-content: flex-end;margin-top: 1%;" v-for="i in sendmessages" :key="i.key" >
-              <div style="background-color: red;border-radius: 3px;margin-left: 5px;white-space: pre-line;" >
-       {{i.message}}
+        </div>
+          <!-- 右 -->
+          <div style="display: flex;justify-content: flex-end;">
+          <div style="background-color: red;border-radius: 3px;margin-left: 5px;white-space: pre-line;" v-show="i.send">
+            {{i.message}}
               </div>
-              <div style="width:10%;height:10%;">
+              <div style="width:10%;height:10%;" v-show="i.send">
                 <img :src="image" alt="" style="width:100%;height:100%;border-radius: 100px;">
               </div>
-
-
+            </div>
             </li>
-
           </ul>
 
         </div>
@@ -194,7 +193,7 @@
             </div>
           </div>
           <div style="width:100%;height:90%;background-color: white;">
-          <ul style="width:100%;height:100%">
+          <ul style="width:100%;height:100%" @click="click">
             <li style="width:100%;height:15%;border-bottom: 1px solid #e9f0ec;display: flex;justify-content: space-between;cursor: pointer;background-color: gray;">
             <div style="width:20%;height:100%;margin-left: 20px;"><img src="../../../../static/chatman.svg" alt="" style="width:70%;height:100%"></div>
             <div style="width:70%;height:100%">
@@ -219,7 +218,7 @@ import Swiper from "swiper";
 import "swiper/css/swiper.css";
 import contentDetail from "./contentDetail";
 import { Message } from "element-ui";
-import {ws,send,onmessage} from "../../../utils/websocekt"
+import {ws,send,onmessage,websocket} from "../../../utils/websocekt"
 import Vue from 'vue';
 export default {
   data() {
@@ -233,9 +232,10 @@ export default {
       visble:'',
       izkchat:'none',
       // image:''
-      sendmessages:[],
+      messages:[],
       areamessage:'',
-      message:Vue.prototype.$message
+      message:Vue.prototype.$message,
+
     };
   },
 
@@ -252,18 +252,34 @@ export default {
   mounted() {
     // this.$bus.$on('message',res=>{
 
-    // })
+    // })]
+
     this.getSwiper();
     ws()
-    window.addEventListener('onmessage',onmessage)
+    window.addEventListener('onmessage', (e)=>{
+      // console.log('监听',e)
+      console.log(e.detail.data)
+      if(e.detail.data!=='ping'){
+        const obj={
+        message:e.detail.data,
+        key:this.messages.length,
+        acept:true
+      }
+      console.log(obj)
+      this.messages.push(obj)
+      }
+    })
     window.dispatchEvent(new CustomEvent('onmessage',{
 
     }))
   },
   destroyed(){
-    window.removeEventListener('onmessage',onmessage)
+    window.removeEventListener('onmessage',(e)=>{})
   },
   methods: {
+    click(e){
+      console.log(e.target)
+    },
     deleteinfo(){
       this.deltes=false
       this.visble='none';
@@ -328,10 +344,11 @@ export default {
     sendmessage(){
       const obj={
         message:this.areamessage.trimLeft(),
-        key:this.sendmessages.length
+        key:this.messages.length,
+        send:true
       }
 
-      this.sendmessages.push(obj)
+      this.messages.push(obj)
       send(this.areamessage)
       this.$nextTick(()=>{
         this.$refs.sendchat.scrollTop=this.$refs.sendchat.scrollHeight
@@ -342,6 +359,7 @@ export default {
 
     },
     Consultation() {
+
       if(sessionStorage.getItem('user_list')){
         this.izkchat = "";
 
@@ -355,7 +373,11 @@ export default {
           }
 
     }
-  }},
+  },
+  acept(e){
+
+  }
+},
   components: { contentDetail },
   computed: {
     image:function(){
@@ -371,11 +393,6 @@ export default {
       return parseInt(this.houseinfo.hnumber[0]) < 5 ? "低楼层" : "高楼层";
     }
   },
-  watch:{
-    message:function(val,oldval){
-      console.log(val,oldval);
-    }
-  }
 };
 </script>
 
