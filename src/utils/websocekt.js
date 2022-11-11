@@ -30,8 +30,8 @@ const ws = async () => {
     .account;
   const Administrator = "admin@163.com";
   websocket = new WebSocket(
-    // `ws://www.atwx.xyz:8002/api/websocket/${Administrator}/wangxrz@163.com`
-    `ws://www.atwx.xyz:8002/api/websocket/${userID}/${Administrator}`
+    `ws://www.atwx.xyz:8002/api/websocket/${Administrator}/1751140932@qq.com`
+    // `ws://www.atwx.xyz:8002/api/websocket/${userID}/${Administrator}`
   );
   websocket.onmessage = e => {
     onmessage(e);

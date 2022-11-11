@@ -151,7 +151,7 @@
         </div>
           <!-- 右 -->
           <div style="display: flex;justify-content: flex-end;">
-          <div style="background-color: red;border-radius: 3px;margin-left: 5px;white-space: pre-line;" v-show="i.send">
+          <div style="background-color: red;max-height: 70%;border-radius: 3px;margin-left: 5px;white-space: pre-line;text-align: left;" v-show="i.send">
             {{i.message}}
               </div>
               <div style="width:10%;height:10%;" v-show="i.send">
@@ -235,6 +235,7 @@ export default {
       messages:[],
       areamessage:'',
       message:Vue.prototype.$message,
+      func:null
 
     };
   },
@@ -245,36 +246,15 @@ export default {
       this.houseinfo = this.$route.query.id;
       this.houseid = this.$route.query.id.houseid;
     }
-
     this.gethouseinfo();
     this.$scrollTo();
   },
   mounted() {
-    // this.$bus.$on('message',res=>{
-
-    // })]
-
+    this.init()
     this.getSwiper();
-    ws()
-    window.addEventListener('onmessage', (e)=>{
-      // console.log('监听',e)
-      console.log(e.detail.data)
-      if(e.detail.data!=='ping'){
-        const obj={
-        message:e.detail.data,
-        key:this.messages.length,
-        acept:true
-      }
-      console.log(obj)
-      this.messages.push(obj)
-      }
-    })
-    window.dispatchEvent(new CustomEvent('onmessage',{
-
-    }))
   },
   destroyed(){
-    window.removeEventListener('onmessage',(e)=>{})
+    window.removeEventListener('onmessage',this.func)
   },
   methods: {
     click(e){
@@ -342,11 +322,13 @@ export default {
       });
     },
     sendmessage(){
+
       const obj={
         message:this.areamessage.trimLeft(),
         key:this.messages.length,
         send:true
       }
+      console.log("🚀 ~ file: index.vue ~ line 328 ~ sendmessage ~ this.areamessage", this.areamessage)
 
       this.messages.push(obj)
       send(this.areamessage)
@@ -375,7 +357,25 @@ export default {
     }
   },
   acept(e){
-
+    console.log('acept',e)
+    console.log(e.detail.data)
+      if(e.detail.data!=='ping'){
+        const obj={
+        message:e.detail.data,
+        key:this.messages.length,
+        acept:true
+      }
+      console.log(obj)
+      this.messages.push(obj)
+      this.$nextTick(()=>{
+        this.$refs.sendchat.scrollTop=this.$refs.sendchat.scrollHeight
+      })
+      }
+  },
+  init(){
+    ws()
+    this.func=e=>{this.acept(e)}
+    window.addEventListener('onmessage',this.func)
   }
 },
   components: { contentDetail },
