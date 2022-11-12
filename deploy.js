@@ -2,18 +2,27 @@
 const path = require("path");
 const fs = require("fs");
 const childProcess = require("child_process"); // node模块创建子进程 用于执行复杂cpu密集型任务
-
-// import ora from "ora";
 const ora = require("ora"); // ora包用于显示加载中的效果，类似于前端页面的loading效果
 const { NodeSSH } = require("node-ssh");
 const archiver = require("archiver");
 const { successLog, errorLog, underlineLog } = require("./utils/inedx");
-const { config } = require("process");
-const projectDir = `${process.cwd()}\\vue-puzzle-verification`;
-console.log(`${process.cwd()}\\vue-puzzle-verification`);
+const projectDir = `${process.cwd()}`;
+console.log(`${process.cwd()}`);
 let ssh = new NodeSSH(); // 生成ssh实例
 
 // 部署流程入口
+const configtest = {
+  host: "124.220.175.86",
+  port: 22,
+  username: "root",
+  password: "010120@Lyj",
+  script: "yarn build",
+  webDir: "/www/wwwroot/124.220.175.86/dist",
+  projectName: "i租客",
+  name: "开发环境",
+  distPath: "dist"
+};
+
 async function deploy(config) {
   const { script, webDir, distPath, projectName, name } = config;
   try {
@@ -23,8 +32,9 @@ async function deploy(config) {
     await uploadFile(webDir);
     await unzipFile(webDir);
     await deleteLocalZip();
+    await restartnginx();
     successLog(
-      `\n 恭喜您，${underlineLog(projectName)}项目${underlineLog(
+      `\n 恭喜您，${underlineLog(projectName)}项目在${underlineLog(
         name
       )}部署成功了^_^\n`
     );
@@ -52,7 +62,6 @@ function execBuild(script) {
   }
 }
 
-// execBuild("yarn build");
 // 第二部，打包zip
 function startZip(distPath) {
   return new Promise((resolve, reject) => {
@@ -78,16 +87,8 @@ function startZip(distPath) {
     archive.finalize();
   });
 }
-// startZip("dist");
 
 // 第三步，连接SSH
-const configtest = {
-  host: "124.220.175.86",
-  port: 22,
-  username: "root",
-  password: "010120@lyj",
-  distPath: "dist"
-};
 async function connectSSH(config) {
   const {
     host,
@@ -103,7 +104,7 @@ async function connectSSH(config) {
     port,
     username,
     password
-    // privateKey,
+    // privateKey
     // passphrase
   };
   try {
@@ -115,8 +116,6 @@ async function connectSSH(config) {
     process.exit(1);
   }
 }
-connectSSH(configtest);
-return false;
 // 第四部，上传zip包
 async function uploadFile(webDir) {
   try {
@@ -128,7 +127,6 @@ async function uploadFile(webDir) {
     process.exit(1);
   }
 }
-
 // 运行命令
 async function runCommand(command, webDir) {
   await ssh.execCommand(command, { cwd: webDir });
@@ -157,11 +155,21 @@ async function deleteLocalZip() {
         reject(err);
         process.exit(1);
       }
-      successLog("  本地dist.zip删除成功\n");
+      successLog("  本地dist.zip删除成功");
       resolve();
     });
   });
 }
-
-// deploy(config);
+// 第七步，重启nginx
+async function restartnginx() {
+  console.log("（7）重启nginx中...");
+  try {
+    await ssh.execCommand("nginx -s reload");
+    successLog("  重启nginx成功");
+  } catch (error) {
+    errorLog("  重启nginx失败:", error);
+    process.exit(1);
+  }
+}
+deploy(configtest);
 module.exports = deploy;
