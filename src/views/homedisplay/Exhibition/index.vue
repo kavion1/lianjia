@@ -57,7 +57,7 @@
               <span></span>
             </p>
             <p class="content__list_item_des">
-              <span>{{ house.country }}-八角-{{ house.community }}</span
+              <span>{{ house.country }}-{{ house.community }}</span
               ><i>/</i><span>{{ house.houseArea }}㎡</span><i>/</i
               ><span>{{ house.houserDirection }}</span
               ><i>/</i><span>{{ house.housePattern }}</span>

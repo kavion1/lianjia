@@ -28,7 +28,8 @@
               type="success"
               style="width: 123px; height: 42px; margin-top: 5px;"
               icon="el-icon-phone-outline"
-              >电话咨询</el-button
+              @click="Consultation"
+              >在线咨询</el-button
             >
           </div>
         </li>
@@ -215,7 +216,11 @@ export default {
       return day;
     }
   },
-  methods: {}
+  methods: {
+    Consultation() {
+      this.$parent.Consultation();
+    }
+  }
   // beforeRouteEnter(from, to, next) {
   //   if (to.name.indexOf("conerhouse") != -1) {
   //     // this.houseinfo = this.$route.query;

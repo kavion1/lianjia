@@ -7,7 +7,6 @@ const { NodeSSH } = require("node-ssh");
 const archiver = require("archiver");
 const { successLog, errorLog, underlineLog } = require("./utils/inedx");
 const projectDir = `${process.cwd()}`;
-console.log(`${process.cwd()}`);
 let ssh = new NodeSSH(); // 生成ssh实例
 
 // 部署流程入口

@@ -123,7 +123,7 @@
             style="width:100%;height:10%;position: relative;background-color: #ffffff;"
           >
           <div style="margin-left: 5%;">
-            <i style="font-size:14px;line-height: 40px">链家帮帮</i>
+            <i style="font-size:14px;line-height: 40px">i租客</i>
             <span style="font-size:14px;line-height: 40px;color: gray;"
               >在线人工服务时间：9:00-20:00</span
             >
@@ -177,7 +177,7 @@
         >
           <div
             style="width:100%;height:10%;background-color: white;display: flex;justify-content:space-between;cursor: pointer;"
-            @click="resetdeletes"
+
           >
             <div style="height:100%;width: 20%;">
               <img
@@ -186,11 +186,14 @@
                 style="height:100%;width: 100%;"
               />
             </div>
-            <div style="width:70%">
+            <div style="width:70%;display: flex;justify-content: space-between;">
               <span style="font-size:14px;line-height: 40px;color: gray;margin"
                 >在线咨询</span
               >
+              <i class="el-icon-arrow-down" style="line-height:2;margin-right:2px;margin-top:4px" v-if="visble==''" @click="deleteinfo"></i>
+              <i class="el-icon-arrow-up" style="line-height:2;margin-right:2px;margin-top:4px" v-else  @click="resetdeletes"></i>
             </div>
+
           </div>
           <div style="width:100%;height:90%;background-color: white;">
           <ul style="width:100%;height:100%" @click="click">
@@ -328,17 +331,12 @@ export default {
         key:this.messages.length,
         send:true
       }
-      console.log("🚀 ~ file: index.vue ~ line 328 ~ sendmessage ~ this.areamessage", this.areamessage)
-
       this.messages.push(obj)
       send(this.areamessage)
       this.$nextTick(()=>{
         this.$refs.sendchat.scrollTop=this.$refs.sendchat.scrollHeight
       })
-
-
-
-
+      this.areamessage=''
     },
     Consultation() {
 
@@ -357,21 +355,26 @@ export default {
     }
   },
   acept(e){
-    console.log('acept',e)
-    console.log(e.detail.data)
-      if(e.detail.data!=='ping'){
-        const obj={
+    let obj
+      if(e.detail.data!=='ping'&&e.detail.data!=='conn_success'){
+        obj={
         message:e.detail.data,
         key:this.messages.length,
         acept:true
+      }}else if(e.detail.data=='conn_success'){
+        obj={
+        message:'你好',
+        key:this.messages.length,
+        acept:true
       }
+}
       console.log(obj)
       this.messages.push(obj)
       this.$nextTick(()=>{
         this.$refs.sendchat.scrollTop=this.$refs.sendchat.scrollHeight
       })
-      }
-  },
+      },
+
   init(){
     ws()
     this.func=e=>{this.acept(e)}
