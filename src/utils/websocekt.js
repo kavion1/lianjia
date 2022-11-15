@@ -4,7 +4,7 @@ let websocket = null;
 let intervalTime;
 const isWebsocket = () => {
   try {
-    if (websocket) {
+    if (websocket != null) {
       websocket.readyState == 1 ? websocket.close() : "";
       console.log("123");
     }

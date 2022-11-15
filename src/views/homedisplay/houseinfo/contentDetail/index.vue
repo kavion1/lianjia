@@ -8,12 +8,14 @@
     background: transparent;"
       ></div>
       <ul class="xiding">
-        <li>房屋信息</li>
-        <li>房源描述</li>
-        <li>费用详情</li>
-        <li>位置周边</li>
-        <li>附近房源</li>
-        <li>推荐房源</li>
+        <div style="display:flex;justify-Content:flex-start">
+          <li>房屋信息</li>
+          <li>房源描述</li>
+          <li>费用详情</li>
+          <li>位置周边</li>
+          <li>附近房源</li>
+          <li>推荐房源</li>
+        </div>
         <li style=" margin-right: 0; float: right;">
           <div style="display:inline-block">
             <el-button
@@ -238,6 +240,8 @@ export default {
   position: sticky;
   top: 0px;
   z-index: 11;
+  display: flex;
+  justify-content: space-between;
 }
 .content_detail {
   margin-top: 30px;

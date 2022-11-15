@@ -33,7 +33,8 @@
           </div>
         </div>
         <div class="content_right ">
-          <div class="content_right_title">
+          <div class="content_right_title"  >
+            <div>
             <span
               style="font-size: 30px;font-weight: 700;margin-right: 4px;line-height: 42px;"
               >{{ houseinfo.money }}</span
@@ -62,7 +63,9 @@
               <i>精装</i>
               <i>随时看房</i>
             </p>
-            <ul>
+          </div>
+            <ul style="  display: flex;
+    flex-direction: column;">
               <li>
                 租赁方式:<span>{{ houseinfo.rendMethod }}</span>
               </li>
@@ -430,6 +433,8 @@ export default {
 .content_cor {
   /* width: 100%; */
   height: 390px;
+  display: flex;
+    justify-content: space-between;
 }
 .content_cor_swiper {
   height: 100%;
@@ -458,6 +463,11 @@ export default {
   font-size: 16px;
   margin-bottom: 10px;
   color: #fa5741;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+
 }
 .operate_box {
   float: right;
