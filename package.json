@@ -9,7 +9,7 @@
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
     "build": "node build/build.js",
-    "deploy": "node deploy.js"
+    "deploy": "node utils/deploy.js"
   },
   "dependencies": {
     "archiver": "^5.3.1",
