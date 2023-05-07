@@ -36,3 +36,12 @@ export const unattentionhouse = houseid =>
     method: "delete",
     url: `/izuke/userattention/delHouse/${houseid}`
   });
+
+//随机四条房源信息
+
+export const randomhouseinfo = () => {
+  return requests({
+    method: "get",
+    url: "/izuke/houselist/select4Data"
+  });
+};

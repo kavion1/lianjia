@@ -52,3 +52,18 @@ export const userattention = (current, size) =>
     url: `/izuke/userattention/getHouse/${current}/${size}`,
     method: "get"
   });
+
+export const getResetCode = data => {
+  return requests({
+    url: "/izuke/resetSendCode",
+    data,
+    method: "post"
+  });
+};
+
+export const resetPassword = data =>
+  requests({
+    url: "/izuke/user/resetPassword",
+    data,
+    method: "post"
+  });

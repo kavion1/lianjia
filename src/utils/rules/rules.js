@@ -10,12 +10,12 @@ const validateaccount = (rule, value, callback) => {
 };
 const validatepassword = (rule, value, callback) => {
   // 密码至少包含 数字和英文，长度6-20
-  const reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{10,20}$/;
+  const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_!@#$%^&*`~()-+=]+$)(?![a-z0-9]+$)(?![a-z\W_!@#$%^&*`~()-+=]+$)(?![0-9\W_!@#$%^&*`~()-+=]+$)[a-zA-Z0-9\W_!@#$%^&*`~()-+=]/;
   if (value.length > 6) {
     if (reg.test(value)) {
       callback();
     } else {
-      callback(new Error("密码应包含数字和英文"));
+      callback(new Error("密码应包含数字,大写，小写或特殊字符中的任意三项。"));
     }
   } else {
     callback(new Error("密码至少为10位"));
@@ -27,6 +27,14 @@ const validatecode = (rule, value, callback) => {
     callback();
   } else {
     callback(new Error("验证码错误！"));
+  }
+};
+
+const validatePassWordRepeat = (rule, value, callback, password1) => {
+  if (password1 === value) {
+    callback();
+  } else {
+    callback(new Error("两次密码不一致,请检查。"));
   }
 };
 // 必填规则
@@ -66,5 +74,6 @@ export {
   validatecode,
   mandatory,
   CustomRules,
-  Pubrules
+  Pubrules,
+  validatePassWordRepeat
 };

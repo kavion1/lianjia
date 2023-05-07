@@ -17,26 +17,19 @@
             关注的房源
           </li></router-link
         >
-        <router-link :to="{ name: 'concernplot' }"
-          ><li :class="$route.name == 'concernplot' ? 'hover' : ''">
-            关注的小区
-          </li></router-link
-        >
-        <router-link :to="{ name: 'houserecord' }">
-          <li :class="$route.name == 'houserecord' ? 'hover' : ''">
-            看房记录
-          </li></router-link
-        >
+
         <router-link :to="{ name: 'myentrust' }">
           <li :class="$route.name == 'myentrust' ? 'hover' : ''">
             我的委托
           </li></router-link
         >
-        <router-link :to="{ name: 'mysearch' }"
-          ><li :class="$route.name == 'mysearch' ? 'hover' : ''">
-            我的搜索
-          </li></router-link
-        >
+
+        <li v-show='Type'>
+          <!-- v-show="
+            JSON.parse(sessionStorage.getItem('user_list')).userInfo.type == 1
+          " -->
+          <a href="http://106.52.182.240:8043"> 后台管理</a>
+        </li>
       </ul>
     </div>
   </div>
@@ -46,7 +39,8 @@
 export default {
   data() {
     return {
-      userinfo: {}
+      userinfo: {},
+      Type: false
     };
   },
   methods: {
@@ -63,6 +57,12 @@ export default {
   },
   created() {
     this.login_token();
+    if(  JSON.parse(sessionStorage.user_list).userInfo.type==1){
+      this.Type=true
+    }else{
+      this.Type=false
+    }
+   
   }
 };
 </script>

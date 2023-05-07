@@ -4,19 +4,12 @@
       <ul class="channelList">
         <router-link to="/home"> <li>首页</li></router-link>
 
-        <router-link to=""
-          ><li><a>商业租赁</a></li></router-link
-        >
         <router-link to="/homedisplay">
           <li>
-            <a :class="$route.name == 'homedisplay' ? 'selected' : ''">租房</a>
+            <a :class="$route.name == 'homedisplay' ? 'selected' : ''">房源</a>
           </li></router-link
         >
-        <li><a>旅居</a></li>
-        <li><a>房价</a></li>
-        <li><a>小区</a></li>
-        <li><a>经纪人</a></li>
-        <li><a>指南</a></li>
+
         <router-link to="/pubhome">
           <li>
             <a :class="$route.name == 'pubhome' ? 'selected' : ''">发布房源</a>

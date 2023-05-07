@@ -1,4 +1,5 @@
 import Vue from "vue";
+import { sendPing } from "./test";
 
 let websocket = null;
 let intervalTime;
@@ -22,17 +23,29 @@ const isWebsocketInwindow = () => {
     throw error;
   }
 };
+let userID;
+if (sessionStorage.getItem("user_list")) {
+  userID = JSON.parse(sessionStorage.getItem("user_list")).userInfo.account;
+}
 
 const ws = async () => {
   await isWebsocket();
   await isWebsocketInwindow();
-  const userID = JSON.parse(sessionStorage.getItem("user_list")).userInfo
-    .account;
+
   const Administrator = "admin@163.com";
-  websocket = new WebSocket(
-    `ws://www.atwx.xyz:8002/api/websocket/${Administrator}/1751140932@qq.com`
-    // `ws://www.atwx.xyz:8002/api/websocket/${userID}/${Administrator}`
-  );
+
+  if (userID.includes("admin")) {
+    websocket = new WebSocket(
+      `ws://www.atwx.xyz:8002/api/websocket/${userID}/1`
+      // `ws://www.atwx.xyz:8002/api/websocket/${userID}/${Administrator}`
+    );
+  } else {
+    websocket = new WebSocket(
+      `ws://www.atwx.xyz:8002/api/websocket/${userID}/0`
+      // `ws://www.atwx.xyz:8002/api/websocket/${userID}/${Administrator}`
+    );
+  }
+
   websocket.onmessage = e => {
     onmessage(e);
   };
@@ -57,6 +70,12 @@ const onerror = error => {
 // 连接成功
 const onopen = open => {
   console.log("连接成功", open);
+  if (userID.includes("admin")) {
+    return;
+  } else {
+    send({ msg1: "ping", touserid: "admin@163.com" });
+  }
+
   ping();
 };
 
@@ -72,6 +91,9 @@ const onmessage = acceptMessge => {
 };
 
 const pingORmes = msg => {
+  if (msg.msg1) {
+    return JSON.stringify(msg);
+  }
   return msg == "ping" ? JSON.stringify({ msg: msg }) : JSON.stringify({ msg });
 };
 const send = message => {

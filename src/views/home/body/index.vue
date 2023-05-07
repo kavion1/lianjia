@@ -2,54 +2,7 @@
   <div>
     <!--中间导航 Start-->
     <div class="navMain">
-      <div class="wrapBox">
-        <ul class="mainbox clearfix">
-          <li class="main_item">
-            <a href="">
-              <img
-                class="mainpic"
-                src="../images/house-icon1.png"
-                alt="找二手房"
-              />
-              <p class="main_title">找二手房</p>
-              <p class="main_detail">真实二手房源，链家承诺真实在售所见即真</p>
-            </a>
-          </li>
-          <li class="main_item">
-            <a href="">
-              <img
-                class="mainpic"
-                src="../images/house-icon2.png"
-                alt="找新房"
-              />
-              <p class="main_title">找新房</p>
-              <p class="main_detail">全新房屋，全新生活，给您满意的优质新盘</p>
-            </a>
-          </li>
-          <li class="main_item">
-            <a href="">
-              <img
-                class="mainpic"
-                src="../images/house-icon3.png"
-                alt="地图找房"
-              />
-              <p class="main_title">地图找房</p>
-              <p class="main_detail">为您精准定位，位置周边配套设施一览无余</p>
-            </a>
-          </li>
-          <li class="main_item">
-            <a href="">
-              <img
-                class="mainpic"
-                src="../images/house-icon4.png"
-                alt="房屋估价"
-              />
-              <p class="main_title">房屋估价</p>
-              <p class="main_detail">基于海量成交数据，帮您合理定价预估市值</p>
-            </a>
-          </li>
-        </ul>
-      </div>
+      <div class="wrapBox"></div>
     </div>
     <!--中间导航 End-->
     <!--二手好房Start-->
@@ -58,67 +11,31 @@
         <div class="secondTitle">
           <div class="nametit"></div>
           <p class="more clearfix">
-            好房源那么多，我们为你精选，链家网会越来越懂你
-            <a href="">更多二手房</a>
+            <a
+              @click="
+                () => {
+                  this.$router.replace('/homedisplay');
+                }
+              "
+              >更多房源</a
+            >
           </p>
         </div>
         <ul class="secondList clearfix">
-          <li>
+          <li v-for="val in houseinfos" :key="val.uid">
             <a href="">
               <div class="imgwrap">
-                <img src="../images/second01.jpg" alt="" />
-                <p class="tit">商品房带电梯 南北通透三居</p>
-                <p class="tips">
-                  <span>流星花园三区</span>
-                  <span>3室1厅</span>
-                  <span>123.79平米</span>
+                <img :src="val.images[0]" alt="" />
+                <p class="tit">
+                  {{ val.rendMethod }}·{{ val.community
+                  }}{{ val.housePattern }} {{ val.houserDirection }}
                 </p>
-                <span class="price">330万</span>
-              </div>
-              <p class="lianjia "><span>i租客推荐售房源</span></p>
-            </a>
-          </li>
-          <li>
-            <a href="">
-              <div class="imgwrap">
-                <img src="../images/second02.jpg" alt="" />
-                <p class="tit">通州北苑天时名苑南北小三居</p>
                 <p class="tips">
-                  <span>天时名苑</span>
-                  <span>3室2厅</span>
-                  <span>117.87平米</span>
+                  <span>{{ val.community }}</span>
+                  <span>{{ val.housePattern }}</span>
+                  <span>{{ val.houseArea }}平米</span>
                 </p>
-                <span class="price">330万</span>
-              </div>
-              <p class="lianjia "><span>i租客推荐售房源</span></p>
-            </a>
-          </li>
-          <li>
-            <a href="">
-              <div class="imgwrap">
-                <img src="../images/second03.jpg" alt="" />
-                <p class="tit">一层带花园30平米。房本满</p>
-                <p class="tips">
-                  <span>流星花园三区</span>
-                  <span>3室1厅</span>
-                  <span>127.38平米</span>
-                </p>
-                <span class="price">330万</span>
-              </div>
-              <p class="lianjia "><span>i租客推荐售房源</span></p>
-            </a>
-          </li>
-          <li>
-            <a href="">
-              <div class="imgwrap">
-                <img src="../images/second04.jpg" alt="" />
-                <p class="tit">南北通透，不临街，采光充足</p>
-                <p class="tips">
-                  <span>龙华园</span>
-                  <span>2室1厅</span>
-                  <span>69.83平米</span>
-                </p>
-                <span class="price">330万</span>
+                <span class="price">{{ val.money }}元/月</span>
               </div>
               <p class="lianjia "><span>i租客推荐售房源</span></p>
             </a>
@@ -134,48 +51,28 @@
           <div class="nametit"></div>
           <p class="more clearfix">
             纵览小区，恋上这座城
-            <a href="">更多二手房</a>
+            <a
+              @click="
+                () => {
+                  this.$router.replace('/homedisplay');
+                }
+              "
+              >更多房源</a
+            >
           </p>
         </div>
         <ul class="recommendList clearfix">
-          <li>
+          <li v-for="val in houseinfos2" :key="val.uid">
             <a href="">
               <div class="recowrap">
-                <img src="../images/reco1.jpg" alt="小区推荐1" />
+                <img :src="val.images[0]" alt="小区推荐1" />
               </div>
               <div class="recoTit">
-                <h2 class="recotitle">国美第一城3号院</h2>
+                <h2 class="recotitle">{{ val.community }}</h2>
                 <p class="price clearfix">
-                  <span class="price-detail">66666<label>元/平</label></span>
-                  <span class="time fr">2012年建</span>
-                </p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="">
-              <div class="recowrap">
-                <img src="../images/reco2.jpg" alt="小区推荐1" />
-              </div>
-              <div class="recoTit">
-                <h2 class="recotitle">新景家园东区</h2>
-                <p class="price clearfix">
-                  <span class="price-detail">99212<label>元/平</label></span>
-                  <span class="time fr">2007年建</span>
-                </p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="">
-              <div class="recowrap">
-                <img src="../images/reco3.jpg" alt="小区推荐1" />
-              </div>
-              <div class="recoTit">
-                <h2 class="recotitle">柏林爱乐二期</h2>
-                <p class="price clearfix">
-                  <span class="price-detail">55436<label>元/平</label></span>
-                  <span class="time fr">2017年建</span>
+                  <span class="price-detail"
+                    >{{ val.money }}<label>元/月</label></span
+                  >
                 </p>
               </div>
             </a>
@@ -183,61 +80,40 @@
         </ul>
       </div>
     </div>
-    <!--小区推荐 End-->
-    <!--新房新起航 Start-->
-    <!-- <div class="newBox">
-      <div class="wrapBox">
-        <div class="secondTitle newhouseTitle">
-          <div class="nametit"></div>
-          <p class="more clearfix">
-            真实信息准确同步，楼盘动态一手掌握
-            <a href="">更多二手房</a>
-          </p>
-        </div>
-        <ul class="newList clearfix">
-          <li>
-            <div class="newBg"></div>
-            <div class="newjian">立减五万</div>
-            <div class="newTitle">
-              领秀翡翠山
-              <span><label>57000</label>平/元</span>
-            </div>
-            <a href="">
-              <img class="newimg" src="../images/new1.jpg" />
-            </a>
-          </li>
-          <li>
-            <div class="newBg"></div>
-            <div class=""></div>
-            <div class="newTitle">
-              通泰国际公馆
-              <span><label>65000</label>平/元</span>
-            </div>
-            <a href="">
-              <img class="newimg" src="../images/new2.jpg" />
-            </a>
-          </li>
-          <li>
-            <div class="newBg"></div>
-            <div class=""></div>
-            <div class="newTitle">
-              中粮京西祥云
-              <span><label>58000</label>平/元</span>
-            </div>
-            <a href="">
-              <img class="newimg" src="../images/new3.jpg" />
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div> -->
-    <!--新房新起航 End-->
   </div>
 </template>
 
 <script>
 export default {
-  name: "Bodys"
+  name: "Bodys",
+  data: () => {
+    return {
+      houseinfos: [],
+      houseinfos2: []
+    };
+  },
+  methods: {
+    async randomS() {
+      const res = await this.$API.exhibitionhome.randomhouseinfo();
+
+      console.log(res);
+      if (res.data.flag) {
+        this.houseinfos = res.data.data.houselist;
+      }
+    },
+    async randomS1() {
+      const res = await this.$API.exhibitionhome.randomhouseinfo();
+
+      console.log(res);
+      if (res.data.flag) {
+        this.houseinfos2 = res.data.data.houselist.slice(0, 3);
+      }
+    }
+  },
+  mounted() {
+    this.randomS();
+    this.randomS1();
+  }
 };
 </script>
 
@@ -377,7 +253,7 @@ export default {
   left: 0;
   top: 150px;
   display: block;
-  width: 65px;
+  /* width: 65px; */
   height: 30px;
   background: #394043;
   line-height: 30px;

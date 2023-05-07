@@ -145,20 +145,19 @@
             <li style="width:100%;margin-top: 1%;" v-for="i in messages" :key="i.key">
               <!-- 左 -->
               <div style="display: flex;justify-content: flex-start;">
-          <div style="width:10%;height:10%;" v-show="i.acept">
-            <img src="../../../../static/chatman.svg" alt="" style="width:100%;height:100%;border-radius: 100px;">
-          </div>
-          <div style="max-width:70%;background-color: gray;border-radius: 3px;margin-right: 5px;text-align: left;" v-show="i.acept">
+            <el-avatar  :size="large" src="../../../../static/chatman.svg"  v-show="i.acept"></el-avatar>
+          <div style="max-width:70%;background-color: gray;border-radius: 3px;margin-right: 5px;text-align: left;     word-wrap: break-word;" v-show="i.acept">
             {{i.message}}
           </div>
         </div>
           <!-- 右 -->
           <div style="display: flex;justify-content: flex-end;">
-          <div style="background-color: red;max-height: 70%;border-radius: 3px;margin-left: 5px;white-space: pre-line;text-align: left;" v-show="i.send">
+          <div style="background-color: rgb(115, 143, 195)(0, 255, 238);max-width: 70%;border-radius: 3px;margin-left: 5px;text-align: left;     word-wrap: break-word;" v-show="i.send">
             {{i.message}}
               </div>
               <div style="width:10%;height:10%;" v-show="i.send">
-                <img :src="image" alt="" style="width:100%;height:100%;border-radius: 100px;">
+
+                <el-avatar  :size="large" :src="image" ></el-avatar>
               </div>
             </div>
             </li>
@@ -199,13 +198,23 @@
 
           </div>
           <div style="width:100%;height:90%;background-color: white;">
-          <ul style="width:100%;height:100%" @click="click">
+          <ul style="width:100%;height:100%" >
             <li style="width:100%;height:15%;border-bottom: 1px solid #e9f0ec;display: flex;justify-content: space-between;cursor: pointer;background-color: gray;">
-            <div style="width:20%;height:100%;margin-left: 20px;"><img src="../../../../static/chatman.svg" alt="" style="width:70%;height:100%"></div>
+            <div style="width:20%;height:100%;margin-left: 20px;">
+              <img src="../../../../static/chatman.svg" alt="" style="width:70%;height:100%">
+            </div>
             <div style="width:70%;height:100%">
-              <div style="height:50%;width:80%;font-size: 14px;font-weight: bold;line-height: 36px;"><span>链家帮帮</span></div>
+              <div style="height:50%;width:80%;font-size: 14px;font-weight: bold;line-height: 36px;"><span>izuke客服</span></div>
               <div style="height:50%;width:80%;font-size: 8px;line-height: 20px;">官方人工客服</div>
             </div>
+            </li>
+            <li style="width:100%;height:15%;border-bottom: 1px solid #e9f0ec;display: flex;justify-content: space-between;cursor: pointer;align-items: center; "  v-for="(val,index) in usersList" @click="click(val.userID)" :key="index">
+
+              <el-avatar shape="square" :size="large" :src="val.useravater" style="margin-left:20px"></el-avatar>
+
+              <div style="height:50%;width:80%;font-size: 14px;font-weight: bold;line-height: 36px;margin-left:20px"><span>{{ val.username }}</span></div>
+
+
             </li>
           </ul>
           </div>
@@ -226,6 +235,7 @@ import contentDetail from "./contentDetail";
 import { Message } from "element-ui";
 import {ws,send,onmessage,websocket} from "../../../utils/websocekt"
 import Vue from 'vue';
+import Json from "archiver/lib/plugins/json";
 export default {
   data() {
     return {
@@ -241,8 +251,9 @@ export default {
       messages:[],
       areamessage:'',
       message:Vue.prototype.$message,
-      func:null
-
+      func:null,
+      usersList:[],
+      clickid:''
     };
   },
 
@@ -256,15 +267,16 @@ export default {
     this.$scrollTo();
   },
   mounted() {
-    this.init()
+
     this.getSwiper();
   },
   destroyed(){
     window.removeEventListener('onmessage',this.func)
   },
   methods: {
-    click(e){
-      console.log(e.target)
+    click(id){
+      this.clickid=id
+      send({msg1:"ping",touserid:id})
     },
     deleteinfo(){
       this.deltes=false
@@ -345,6 +357,7 @@ export default {
 
       if(sessionStorage.getItem('user_list')){
         this.izkchat = "";
+        this.init()
 
       }else{
         let doms = document.getElementsByClassName(
@@ -359,7 +372,15 @@ export default {
   },
   acept(e){
     let obj
-      if(e.detail.data!=='ping'&&e.detail.data!=='conn_success'){
+    console.log('123123',JSON.parse (e.detail.data))
+    const data=JSON.parse (e.detail.data)
+
+    if(data.users){
+
+      this.usersList=data.users
+      return
+    }
+      if(e.detail.data!=='ping'&&e.detail.data!=='conn_success'&&!data.users){
         obj={
         message:e.detail.data,
         key:this.messages.length,
@@ -634,4 +655,15 @@ export default {
     -webkit-box-shadow:inset 0 0 6px rgba(0,0,0,.3);
     background-color:#555;
 }
+li:hover {
+  background: #4fac6a;
+  color: #e6e5e5;
+  line-height: 40px;
+}
+li:active {
+  background-color: #4fac6a;
+  color: #e6e5e5;
+  line-height: 40px;
+}
+
 </style>

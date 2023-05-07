@@ -209,12 +209,8 @@ export default {
             31 -
           parseInt(this.houseinfo.gmtModified.split(" ")[0].split("-")[2]) +
           date;
-        console.log(
-          parseInt(this.houseinfo.gmtCreate.split(" ")[0].split("-")[2])
-        );
       }
 
-      console.log(day);
       return day;
     }
   },

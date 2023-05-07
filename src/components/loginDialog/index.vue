@@ -7,7 +7,9 @@
     :close-on-click-modal="false"
     style="overflow:hidden"
   >
+    <!-- 邮箱登录 -->
     <div v-show="email_login">
+      <!-- <div v-show="false"> -->
       <el-form
         :model="login_Email_form"
         :rules="rulesEmail"
@@ -99,6 +101,7 @@
         </el-row>
       </el-form>
     </div>
+    <!-- 账号密码登录 -->
     <div v-show="account_login">
       <el-form
         :rules="rules_account"
@@ -143,7 +146,16 @@
                 ></el-col
               >
               <el-col :span="10" style="float:right;"
-                ><a style="color:rgb(103, 194, 58);">忘记密码</a></el-col
+                ><a
+                  style="color:rgb(103, 194, 58);"
+                  @click="
+                    () => {
+                      Password_reset = true;
+                      account_login = false;
+                    }
+                  "
+                  >忘记密码</a
+                ></el-col
               >
             </el-row>
             <!-- 登录 -->
@@ -179,6 +191,104 @@
         </el-form-item>
       </el-form>
     </div>
+    <!-- 密码重置 -->
+    <div v-show="Password_reset">
+      <!-- <div v-show="true"> -->
+      <el-form
+        :rules="rules_account"
+        :model="Password_reset_form"
+        ref="Password_reset_form"
+        status-icon
+      >
+        <el-form-item>
+          <el-row style="margin:0 0 0 40px">
+            <!-- 账号密码登录 -->
+            <el-form-item style="margin:0 0 24px 0" prop="account">
+              <el-row>
+                <el-col :span="20"
+                  ><el-input
+                    type="text"
+                    style="outline:none;border-radius: 0;"
+                    v-model="Password_reset_form.account"
+                    placeholder="请输入账号"
+                  ></el-input
+                ></el-col>
+              </el-row>
+            </el-form-item>
+            <!-- 验证码 -->
+            <el-form-item prop="verificationCode">
+              <el-row>
+                <el-col :span="11"
+                  ><el-input
+                    style="outline:none"
+                    v-model="Password_reset_form.code"
+                    placeholder="请输入验证码"
+                  ></el-input
+                ></el-col>
+                <el-col :span="3"
+                  ><el-button
+                    type="primary"
+                    @click="get_verificationCode(1)"
+                    :disabled="code_btn"
+                    style="width:105px; text-align:center; margin:0 5px;font-size: 14px;text-align: center;"
+                    >{{ code_btn ? time : "获取验证码" }}</el-button
+                  >
+                </el-col>
+              </el-row>
+            </el-form-item>
+            <!-- 密码 -->
+            <el-form-item prop="password1" style="margin:24px 0 24px 0">
+              <el-row>
+                <el-col :span="20"
+                  ><el-input
+                    style="outline:none;border-right: none;"
+                    v-model="Password_reset_form.password1"
+                    placeholder="请输入密码"
+                    show-password
+                    @change.prevent="submitForm_account_btn"
+                  ></el-input
+                ></el-col>
+              </el-row>
+            </el-form-item>
+            <el-form-item prop="password2">
+              <el-row>
+                <el-col :span="20"
+                  ><el-input
+                    style="outline:none;border-right: none;"
+                    v-model="Password_reset_form.password2"
+                    placeholder="请再次输入密码"
+                    show-password
+                    @change.prevent="submitForm_account_btn"
+                  ></el-input
+                ></el-col>
+              </el-row>
+            </el-form-item>
+
+            <el-row style="margin-left:0px;margin-top:20px">
+              <el-col :span="20">
+                <el-button
+                  type="success"
+                  style="text-align:center;width: 100%;"
+                  @click.prevent="Password_reset_btn('Password_reset_form')"
+                  >提交</el-button
+                >
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="18"
+                ><button
+                  @click="accountandphoneLogin"
+                  style="color:green;background-color: white;cursor: pointer;"
+                >
+                  邮箱快捷登录
+                </button></el-col
+              >
+            </el-row>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </div>
+    <!-- 邮箱注册 -->
     <div v-show="email_register">
       <el-form
         :model="register_email_form"
@@ -239,7 +349,7 @@
                 ><el-button
                   type="primary"
                   style="width:105px; text-align:center; margin:0 5px;font-size: 14px;"
-                  @click="get_verificationCode"
+                  @click="get_verificationCode()"
                   :disabled="code_btn"
                   >{{ code_btn ? time : "获取验证码" }}</el-button
                 >
@@ -302,7 +412,8 @@ import {
   validatepassword,
   validatecode,
   mandatory,
-  CustomRules
+  CustomRules,
+  validatePassWordRepeat
 } from "../../utils/rules/rules";
 export default {
   name: "loginDialog",
@@ -331,9 +442,32 @@ export default {
         password: "",
         checked: false
       },
+      Password_reset_form: {
+        account: "",
+        code: "",
+        password1: "",
+        password2: ""
+      },
       rules_account: {
         account: [mandatory("账号不能为空！"), CustomRules(validateaccount)],
-        password: [mandatory("密码不能为空")]
+        code: [mandatory("验证码不能为空！"), CustomRules(validatecode)],
+        password: [mandatory("密码不能为空")],
+        password1: [mandatory("密码不能为空"), CustomRules(validatepassword)],
+        password2: [
+          mandatory("密码不能为空"),
+          CustomRules(validatepassword),
+
+          {
+            validator: (rule, value, callback) => {
+              if (this.Password_reset_form.password1 === value) {
+                callback();
+              } else {
+                callback(new Error("两次密码不一致,请检查。"));
+              }
+            },
+            trigger: "change"
+          }
+        ]
       },
 
       rulesEmail: {
@@ -350,10 +484,10 @@ export default {
         password: [mandatory("密码不能为空"), CustomRules(validatepassword)]
       },
       visiblec: false,
-
       email_login: false,
       email_register: false,
       account_login: false,
+      Password_reset: false,
       passwordtype: true,
       code: "",
       code_btn: false,
@@ -363,11 +497,13 @@ export default {
   methods: {
     accountandphoneLogin() {
       if (this.email_login) {
+        this.Password_reset = false;
         this.email_login = false;
         this.account_login = true;
         this.$refs["login_Email_form"].resetFields();
       } else {
         this.email_login = true;
+        this.Password_reset = false;
         this.account_login = false;
         this.$refs["login_account_form"].resetFields();
       }
@@ -377,10 +513,11 @@ export default {
       this.account_login = false;
       this.email_register = false;
       this.visiblec = false;
-
+      this.Password_reset = false;
       this.$refs["login_Email_form"].resetFields();
       this.$refs["login_account_form"].resetFields();
       this.$refs["register_email_form"].resetFields();
+      this.$refs["Password_reset_form"].resetFields();
     },
     //email登录
     submitForm_Email_btn(formName) {
@@ -473,6 +610,24 @@ export default {
         }
       });
     },
+    Password_reset_btn(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.$API.user
+            .resetPassword(this.Password_reset_form)
+            .then(result => {
+              console.log("result", result);
+              if (result.data.code == 200) {
+                this.$message.success("重置成功");
+                this.Password_reset = false;
+                this.$refs["Password_reset_form"].resetFields();
+                this.login_account = true;
+              }
+            })
+            .catch(err => {});
+        }
+      });
+    },
     // 邮箱注册
     register_email_btn(formName) {
       const { email, code, password, name } = this.register_email_form;
@@ -507,30 +662,61 @@ export default {
       this.email_register = false;
       this.account_login = true;
     },
-    async get_verificationCode() {
-      const { email } =
-        this.register_email_form.email != ""
-          ? this.register_email_form
-          : this.login_Email_form;
+    get_verificationCode(reset = 0) {
+      if (!reset) {
+        const { email } =
+          this.register_email_form.email != ""
+            ? this.register_email_form
+            : this.login_Email_form;
 
-      if (email) {
-        this.$API.user
-          .getcode(email)
-          .then(result => {
-            this.code_btn = true;
-            this.code = result.data.data;
-            const timer = setInterval(() => {
-              this.time--;
-              if (this.time <= 0 || this.visiblec == false) {
-                this.time = 120;
-                clearInterval(timer);
-                this.code_btn = false;
-              }
-            }, 1000);
-          })
-          .catch(err => {});
+        console.log("email", email);
+        if (email) {
+          this.$API.user
+            .getcode(email)
+            .then(result => {
+              this.code_btn = true;
+              this.code = result.data.data;
+              const timer = setInterval(() => {
+                this.time--;
+                if (this.time <= 0 || this.visiblec == false) {
+                  this.time = 120;
+                  clearInterval(timer);
+                  this.code_btn = false;
+                }
+              }, 1000);
+            })
+            .catch(err => {});
+        } else {
+          this.$message.warning("请输入邮箱");
+        }
       } else {
-        this.$message.warning("请输入邮箱");
+        const { account } = this.Password_reset_form;
+        if (account) {
+          // const result = await this.$API.user.getResetCode({ account });
+          this.$API.user
+            .getResetCode({ account })
+            .then(result => {
+              console.log("result", result);
+              if (result.data.code == 201) {
+                this.$message.warning("该账号不存在，请检查！");
+              } else {
+                this.$message.success("发送成功");
+                this.code_btn = true;
+                this.code = result.data.data;
+                const timer = setInterval(() => {
+                  this.time--;
+                  if (this.time <= 0 || this.visiblec == false) {
+                    this.time = 120;
+                    clearInterval(timer);
+                    this.code_btn = false;
+                  }
+                }, 1000);
+              }
+            })
+            .catch(err => {});
+        } else {
+          this.$message.warning("请输入邮箱");
+        }
       }
     },
     async login_token() {
@@ -557,6 +743,9 @@ export default {
     title() {
       if (this.email_login) {
         return "邮箱快捷登录";
+      }
+      if (this.Password_reset) {
+        return "忘记密码";
       }
       if (this.account_login) {
         return "账号密码登录";

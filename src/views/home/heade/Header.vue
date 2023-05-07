@@ -11,21 +11,9 @@
             <Login ref="login"></Login>
 
             <ul class="nav_wrap clearfix">
-              <li><a href="">商业租赁</a></li>
               <router-link to="/homedisplay">
-                <li><a href="">租房</a></li></router-link
+                <li><a href="">房源</a></li></router-link
               >
-
-              <li class="li_lvju">
-                <img class="lvju" src="../images/lvju.png" alt="旅居" /><a
-                  href=""
-                  >旅居</a
-                >
-              </li>
-              <li><a href="">房价</a></li>
-              <li><a href="">小区</a></li>
-              <li><a href="">经纪人</a></li>
-              <li><a href="">指南</a></li>
               <li>
                 <router-link to="/pubhome">发布房源</router-link>
               </li>
